@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>AI Accountability for Public Sector Suppliers — RPNA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #0d1b2a;
+            --color-bg-deep: #070f18;
+            --color-surface: #152436;
+            --color-text: #e8edf4;
+            --color-text-secondary: #b0bdd0;
+            --color-text-muted: #7a8fa8;
+            --color-accent-1: #FF8000;
+            --color-accent-2: #FFC266;
+            --color-accent-3: #4994A5;
+            --color-glass-bg: rgba(255,255,255,0.05);
+            --color-glass-border: rgba(255,255,255,0.09);
+            --color-vignette: rgba(0,0,0,0.45);
+            --font-display: 'Arvo', 'Rockwell', Georgia, serif;
+            --font-body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+        }
+    </style>
+    <style>
+        :root { --color-bg: #0d1b2a; --color-text: #e8edf4; --glow-color-rgb: 255,128,0; }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { background: var(--color-bg); margin: 0; }
+        body { font-family: var(--font-body); color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+        .deck { width: 100vw; height: 100vh; position: relative; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: scale(0.95); transition: opacity 0.7s ease, transform 0.7s ease; pointer-events: none; overflow: hidden; }
+        .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1100px; padding: clamp(1.5rem, 4vw, 4rem); }
+        .nav-controls { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; z-index: 100; background: var(--color-glass-bg); backdrop-filter: blur(10px); padding: 10px 24px; border-radius: 40px; border: 1px solid var(--color-glass-border); }
+        .nav-btn { width: 40px; height: 40px; border: none; background: var(--color-glass-bg); color: var(--color-accent-1); border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+        .nav-btn:hover { background: var(--color-glass-border); }
+        .slide-dots { display: flex; gap: 8px; }
+        .slide-dots .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--color-glass-border); cursor: pointer; transition: background 0.3s, transform 0.3s; }
+        .slide-dots .dot.active { background: var(--color-accent-1); transform: scale(1.3); }
+        .slide-counter { font-size: 0.8rem; color: var(--color-text-muted); min-width: 40px; text-align: center; }
+        .reveal { opacity: 0; transform: translateY(20px); }
+        .text-glow { text-shadow: 0 0 20px rgba(255,128,0,0.5), 0 0 40px rgba(255,128,0,0.2); }
+        .stat-glow { text-shadow: 0 0 30px rgba(255,128,0,0.6), 0 0 60px rgba(255,128,0,0.25); }
+        @keyframes glow-pulse { 0%, 100% { text-shadow: 0 0 20px rgba(255,128,0,0.5), 0 0 40px rgba(255,128,0,0.2); } 50% { text-shadow: 0 0 30px rgba(255,128,0,0.8), 0 0 60px rgba(255,128,0,0.3); } }
+        .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+        @keyframes float-slow { 0% { transform: translate(0,0) scale(1); } 25% { transform: translate(60px,-50px) scale(1.12); } 50% { transform: translate(-40px,40px) scale(0.9); } 75% { transform: translate(50px,20px) scale(1.08); } 100% { transform: translate(0,0) scale(1); } }
+        @keyframes float-drift { 0% { transform: translate(0,0) scale(1) rotate(0deg); } 33% { transform: translate(-50px,-60px) scale(1.15) rotate(3deg); } 66% { transform: translate(40px,30px) scale(0.88) rotate(-2deg); } 100% { transform: translate(0,0) scale(1) rotate(0deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(80px); animation: float-slow 10s ease-in-out infinite; }
+        .blob:nth-child(2) { animation: float-drift 14s ease-in-out infinite; }
+        .blob:nth-child(3) { animation: float-slow 18s ease-in-out infinite reverse; }
+        .slide::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); background-repeat: repeat; background-size: 256px 256px; opacity: 0.03; mix-blend-mode: overlay; }
+        .slide::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at center, transparent 50%, var(--color-vignette) 100%); }
+        .bar-fill { transition: width 0.8s ease; }
+        .card-magnetic { transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: default; }
+        .card-magnetic:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(255,128,0,0.15); }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } }
+        .horizon-card { border-left: 4px solid #e8574a; background: rgba(232,87,74,0.07); }
+        .syri-card { border-left: 4px solid #4994A5; background: rgba(73,148,165,0.09); }
+        .dwp-card { border-left: 4px solid #FF8000; background: rgba(255,128,0,0.07); }
+        .lesson-pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+        .icn { width: 30px; height: 30px; stroke: #FF8000; stroke-width: 1.75; fill: none; stroke-linecap: round; stroke-linejoin: round; display: block; }
+        .icn-lg { width: 56px; height: 56px; stroke: #FF8000; stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; display: block; }
+        .icn-center { margin-left: auto; margin-right: auto; }
+
+        /* ============ UPSIZED DEFAULTS (agreed from sizing mock 2026-04-29) ============ */
+        .slide > .content { max-width: 1200px; padding: clamp(1.75rem, 4vw, 4.5rem); }
+        /* Eyebrow labels */
+        .slide .content > p.text-xs.uppercase { font-size: 0.85rem; }
+        /* Card body micro-copy across all card variants */
+        .slide [class*="rounded-xl"] p.text-xs,
+        .slide [class*="rounded-2xl"] p.text-xs,
+        .slide [class*="rounded-lg"] p.text-xs,
+        .slide [class*="rounded-r-xl"] p.text-xs { font-size: 0.85rem; line-height: 1.55; }
+        /* Card titles */
+        .slide [class*="rounded-xl"] h3.text-sm,
+        .slide [class*="rounded-2xl"] h3.text-sm { font-size: 0.95rem; }
+        /* Stat numbers */
+        .slide .text-\[2\.4rem\] { font-size: 2.8rem !important; }
+        /* Section and title headlines */
+        .slide h1.font-display { font-size: clamp(2.6rem, 5.5vw, 5.2rem) !important; }
+        .slide h2.font-display { font-size: clamp(2.1rem, 4vw, 3.4rem) !important; }
+        /* Table cells */
+        .slide table td, .slide table th { font-size: 0.85rem !important; padding: 0.9rem !important; }
+        /* Lesson pill bumps very slightly */
+        .lesson-pill { font-size: 0.75rem; }
+
+        /* ============ COVER BACKGROUND IMAGE (slide 1) ============ */
+        .slide-cover-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+        .slide-cover-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: 0.55; }
+        .slide-cover-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(13,27,42,0.35) 0%, rgba(13,27,42,0.65) 55%, rgba(13,27,42,0.92) 100%); }
+
+        /* ============ LOGO TOP-RIGHT ON EVERY SLIDE ============ */
+        .slide-logo {
+            position: absolute;
+            top: clamp(20px, 2.6vw, 32px);
+            right: clamp(20px, 2.6vw, 36px);
+            height: clamp(34px, 3.5vw, 48px);
+            width: auto;
+            z-index: 6;
+            pointer-events: none;
+            opacity: 0.95;
+        }
+
+        /* ============ CONFIDENTIAL FOOTER ON EVERY SLIDE ============ */
+        .slide-confidential {
+            position: absolute;
+            bottom: clamp(14px, 2vw, 22px);
+            left: clamp(20px, 2.6vw, 32px);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            opacity: 0.75;
+            z-index: 6;
+            pointer-events: none;
+            font-weight: 500;
+        }
+
+        /* ============ CONTACT (slide 17) ============ */
+        .contact-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.95rem 1.6rem;
+            border: 1px solid rgba(255,128,0,0.45);
+            border-radius: 999px;
+            background: rgba(255,128,0,0.08);
+            color: #FFC266;
+            font-family: var(--font-display);
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            text-decoration: none;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+        .contact-cta:hover { background: rgba(255,128,0,0.16); border-color: rgba(255,128,0,0.7); transform: translateY(-2px); }
+        .contact-cta svg { stroke: #FFC266; stroke-width: 1.75; fill: none; width: 22px; height: 22px; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ============ MOBILE & TABLET RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .slide > .content { max-width: 100%; padding: clamp(1.25rem, 4vw, 2.5rem); }
+            .grid.grid-cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .grid.grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            html, body { overflow: auto; height: auto; }
+            body { -webkit-text-size-adjust: 100%; }
+            .deck { height: auto; }
+            .slide { position: relative; height: auto; min-height: 100vh; padding: 4.5rem 0 6rem; opacity: 1 !important; transform: none !important; pointer-events: all !important; }
+            .slide > .content { padding: 1.25rem; }
+            /* All multi-col grids collapse to 1 col on phones */
+            .grid.grid-cols-2,
+            .grid.grid-cols-3,
+            .grid.grid-cols-4,
+            .grid.grid-cols-5 { grid-template-columns: 1fr; gap: 0.75rem; }
+            /* Tighter type on phones */
+            h1.font-display { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
+            h2.font-display { font-size: clamp(1.5rem, 7vw, 2rem) !important; }
+            .text-\[clamp\(2rem\,4vw\,3\.2rem\)\] { font-size: clamp(1.6rem, 7vw, 2.1rem) !important; }
+            .text-\[clamp\(2\.4rem\,5\.5vw\,4\.8rem\)\] { font-size: clamp(2rem, 9vw, 2.6rem) !important; }
+            .text-\[clamp\(2\.8rem\,6vw\,5rem\)\] { font-size: clamp(2.2rem, 9vw, 2.8rem) !important; }
+            .text-\[clamp\(1\.6rem\,3\.5vw\,3rem\)\] { font-size: clamp(1.2rem, 5vw, 1.6rem) !important; }
+            .text-\[clamp\(1\.8rem\,3\.5vw\,2\.8rem\)\] { font-size: clamp(1.5rem, 6.5vw, 1.9rem) !important; }
+            /* Stat cards stay readable */
+            .text-\[2\.4rem\] { font-size: 2rem !important; }
+            /* Slide 14 table scrolls horizontally */
+            .overflow-hidden.rounded-xl { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+            .overflow-hidden.rounded-xl table { min-width: 720px; }
+            /* Particle canvases off on small screens for performance */
+            .particle-canvas, .particle-canvas-ambient { display: none; }
+            /* Nav controls hidden, swipe and scroll instead */
+            .nav-controls { display: none; }
+            .mouse-spotlight { display: none; }
+            /* Slide divider for visual separation when scrolling */
+            .slide + .slide { border-top: 1px solid var(--color-glass-border); }
+            /* Reveal animations off, content visible immediately */
+            .reveal { opacity: 1 !important; transform: none !important; }
+            /* Vignette softened so content doesn't dim off the edges */
+            .slide::after { background: none; }
+        }
+
+        @media (max-width: 768px) {
+            .slide-logo { top: 14px; right: 14px; height: 28px; opacity: 0.92; }
+            .slide-confidential { bottom: 14px; left: 14px; font-size: 0.62rem; letter-spacing: 0.1em; }
+        }
+
+        @media (max-width: 480px) {
+            .slide > .content { padding: 1rem; padding-top: 3rem; padding-bottom: 3rem; }
+            .icn { width: 26px; height: 26px; }
+            .icn-lg { width: 44px; height: 44px; }
+            .slide-logo { top: 12px; right: 12px; height: 24px; }
+            .slide-confidential { bottom: 10px; left: 12px; font-size: 0.58rem; }
+            /* Drop the wide eyebrow letter-spacing on very small screens */
+            .tracking-\[4px\], .tracking-\[5px\], .tracking-\[6px\] { letter-spacing: 2px !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight" style="position:fixed;inset:0;z-index:99;pointer-events:none;"></div>
+
+<div class="deck">
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide active" data-slide="1">
+    <div class="slide-cover-bg">
+        <img src="assets/brand-origami-cranes.jpg" alt="An orange origami crane standing apart from a crowd of grey cranes">
+    </div>
+    <div class="gradient-mesh">
+        <div class="blob" style="width:520px;height:520px;top:-120px;right:-100px;background:var(--color-accent-1);opacity:0.10;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:var(--color-accent-3);opacity:0.10;"></div>
+        <div class="blob" style="width:220px;height:220px;top:40%;left:18%;background:var(--color-accent-2);opacity:0.06;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center">
+        <div class="mb-6 flex justify-center animate-[float_3s_ease-in-out_infinite]">
+            <svg class="icn-lg" viewBox="0 0 64 64" aria-hidden="true"><polyline points="14,38 32,18 50,38"/><polyline points="20,46 32,30 44,46"/></svg>
+        </div>
+        <h1 class="font-display text-[clamp(2.4rem,5.5vw,4.8rem)] font-bold bg-linear-to-br from-accent-1 via-accent-2 to-accent-1 bg-clip-text text-transparent tracking-tight mb-4 reveal">AI Accountability</h1>
+        <h2 class="font-display text-[clamp(1.6rem,3.5vw,3rem)] font-semibold text-text-secondary mb-6 reveal">A Standard for Public Sector Suppliers</h2>
+        <p class="text-[clamp(0.85rem,1.3vw,1.1rem)] font-light text-text-muted tracking-[5px] uppercase reveal">People · Delivery · Risk · Compliance</p>
+        <div class="mt-8 flex justify-center gap-6 reveal">
+            <span class="text-xs uppercase tracking-widest text-text-muted px-4 py-2 border border-glass-border rounded-full">Procurement Act 2023</span>
+            <span class="text-xs uppercase tracking-widest text-text-muted px-4 py-2 border border-glass-border rounded-full">PPN 017 · NHS DTAC</span>
+            <span class="text-xs uppercase tracking-widest text-text-muted px-4 py-2 border border-glass-border rounded-full">EU AI Act 2026</span>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 2: THE STAKES -->
+<div class="slide" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:400px;height:400px;top:-80px;right:-60px;background:var(--color-accent-1);opacity:0.09;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-40px;background:var(--color-accent-3);opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">Why This Matters Now</p>
+        <h2 class="font-display text-[clamp(2rem,4vw,3.2rem)] font-bold mb-8 reveal">The Ground Has Shifted</h2>
+        <div class="grid grid-cols-3 gap-5 mb-6">
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-6 card-magnetic reveal">
+                <div class="text-[2.4rem] font-bold text-accent-1 glow-pulse mb-1">£1.17B</div>
+                <div class="text-sm text-text-muted uppercase tracking-wide">Central government AI spend by 2028</div>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-6 card-magnetic reveal">
+                <div class="text-[2.4rem] font-bold text-accent-1 glow-pulse mb-1">70%</div>
+                <div class="text-sm text-text-muted uppercase tracking-wide">Public sector jobs exposed to AI impact (ONS 2025)</div>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-6 card-magnetic reveal">
+                <div class="text-[2.4rem] font-bold text-accent-1 glow-pulse mb-1">Feb 2025</div>
+                <div class="text-sm text-text-muted uppercase tracking-wide">PPN 017, AI transparency now mandatory in contracts</div>
+            </div>
+        </div>
+        <div class="border-l-4 border-accent-1 pl-5 py-3 bg-glass-bg rounded-r-xl reveal">
+            <p class="text-text-secondary text-sm leading-relaxed"><span class="text-accent-2 font-semibold">The shift in plain terms.</span> Buyers have moved from "does this work?" to "how does this work, who is accountable, and what happens when it goes wrong?" Suppliers who cannot answer these questions are losing marks, and contracts.</p>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 3: THE GOVERNANCE FAILURES -->
+<div class="slide" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-50px;background:#e8574a;opacity:0.08;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-50px;left:-30px;background:var(--color-accent-3);opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">The Defining Case Studies</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-5 reveal">What Buyers Are Trained to Avoid</h2>
+        <div class="grid grid-cols-3 gap-4 mb-4">
+            <div class="horizon-card rounded-xl p-5 reveal">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="lesson-pill" style="background:rgba(232,87,74,0.2);color:#e8574a;">NOT AI</span>
+                    <span class="text-xs text-text-muted">1999 to 2025</span>
+                </div>
+                <h3 class="font-display text-lg font-bold text-text mb-2">Post Office Horizon</h3>
+                <p class="text-xs text-text-muted leading-relaxed mb-3">Fujitsu accounting software with hidden bugs. 700+ wrongful criminal convictions. The supplier concealed defects. The institution trusted outputs blindly. No independent audit rights.</p>
+                <div class="text-xs font-semibold text-[#e8574a]">AI lesson. Information asymmetry plus blind institutional trust equals catastrophic harm at scale.</div>
+            </div>
+            <div class="syri-card rounded-xl p-5 reveal">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="lesson-pill" style="background:rgba(73,148,165,0.2);color:#4994A5;">AI SYSTEM</span>
+                    <span class="text-xs text-text-muted">Court ruling, Feb 2020</span>
+                </div>
+                <h3 class="font-display text-lg font-bold text-text mb-2">Dutch SyRI</h3>
+                <p class="text-xs text-text-muted leading-relaxed mb-3">An ML fraud detection algorithm secretly risk-scored low-income communities. The Hague District Court halted it, the first court ruling to stop an AI system on human rights grounds (ECHR Art. 8).</p>
+                <div class="text-xs font-semibold text-[#4994A5]">AI lesson. Hidden algorithmic harm to protected groups violates fundamental rights, and it will be litigated.</div>
+            </div>
+            <div class="dwp-card rounded-xl p-5 reveal">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="lesson-pill" style="background:rgba(255,128,0,0.2);color:#FF8000;">AI SYSTEM</span>
+                    <span class="text-xs text-text-muted">Disclosed in 2024</span>
+                </div>
+                <h3 class="font-display text-lg font-bold text-text mb-2">DWP Universal Credit AI</h3>
+                <p class="text-xs text-text-muted leading-relaxed mb-3">An ML model risk-scoring around 1M claims a year. Internal analysis showed bias by age, disability, marital status and nationality. Disclosed via FOI. Criticised for a "hurt first, fix later" approach.</p>
+                <div class="text-xs font-semibold text-[#FF8000]">AI lesson. Passive bias monitoring is not enough. Proactive disclosure is now expected.</div>
+            </div>
+        </div>
+        <div class="border-l-4 border-glass-border pl-5 py-2 reveal">
+            <p class="text-text-muted text-xs italic">These three cases are now standard references in procurement officer training. Buyers have been taught to look for exactly these patterns in supplier proposals.</p>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 4: REGULATORY STACK -->
+<div class="slide" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-60px;right:-50px;background:var(--color-accent-1);opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-30px;background:var(--color-accent-3);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">The Compliance Picture</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-5 reveal">Six Instruments Shaping Every Tender</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-sm text-accent-2">Procurement Act 2023</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(38,200,185,0.18);color:#26C8B9;">IN FORCE</span>
+                </div>
+                <p class="text-xs text-text-muted">New transparency obligations, contract management, exit requirements, and supplier exclusion provisions. Section 68 covers tech exit obligations. In force Feb 2025.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-sm text-accent-2">PPN 017 (Feb 2025)</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(38,200,185,0.18);color:#26C8B9;">MANDATORY</span>
+                </div>
+                <p class="text-xs text-text-muted">AI transparency in procurement, replacing PPN 02/24. Mandatory AI disclosure, transparency obligations, and evaluation questions for all central government and ALBs.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-sm text-accent-2">ATRS (CDDO, 2024)</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(38,200,185,0.18);color:#26C8B9;">MANDATORY</span>
+                </div>
+                <p class="text-xs text-text-muted">Algorithmic Transparency Recording Standard. Tier 1 public summary plus Tier 2 technical record. Must be accessible within 5 working days of request.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-sm text-accent-2">NHS DTAC (Apr 2026)</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(255,175,0,0.2);color:#FFAF00;">NHS ONLY</span>
+                </div>
+                <p class="text-xs text-text-muted">Updated form mandatory from 6 April 2026. Clinical safety (DCB0129/0160), data protection, technical security, and interoperability. A named clinical safety officer is required.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-sm text-accent-2">EU AI Act (Aug 2026)</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(232,87,74,0.2);color:#e8574a;">IMMINENT</span>
+                </div>
+                <p class="text-xs text-text-muted">High-risk deadline arrives August 2026. Recruitment and workforce AI, plus public service delivery AI, sit in Annex III high-risk. Conformity assessments, human oversight, and bias testing are required.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-semibold text-sm text-accent-2">PPN 002 Social Value Model</h3>
+                    <span class="text-xs px-2 py-0.5 rounded-full" style="background:rgba(38,200,185,0.18);color:#26C8B9;">IN FORCE</span>
+                </div>
+                <p class="text-xs text-text-muted">Mandatory Adoption Criteria (MACs) for workforce development now intersect with AI displacement obligations. T3.1 reskilling and T1.2 employment creation are scored.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 5: SECTION RISK MITIGATION -->
+<div class="slide" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;background:var(--color-accent-3);opacity:0.14;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-40px;background:var(--color-accent-1);opacity:0.10;"></div>
+        <div class="blob" style="width:200px;height:200px;top:30%;left:10%;background:var(--color-accent-2);opacity:0.07;"></div>
+    </div>
+    <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center">
+        <p class="text-xs uppercase tracking-[6px] text-accent-3 mb-4 reveal">Part One</p>
+        <h2 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-bold bg-linear-to-br from-accent-3 via-accent-2 to-accent-1 bg-clip-text text-transparent reveal">Risk Mitigation</h2>
+        <p class="text-text-muted mt-4 text-lg max-w-lg mx-auto reveal">Five credible dimensions buyers expect suppliers to evidence, not assert</p>
+    </div>
+</div>
+
+<!-- SLIDE 6: FIVE RISK DIMENSIONS -->
+<div class="slide" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:350px;height:350px;top:-60px;right:-50px;background:var(--color-accent-3);opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-30px;background:var(--color-accent-1);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">Risk Mitigation</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-5 reveal">Five Dimensions of Credible AI Risk Governance</h2>
+        <div class="grid grid-cols-5 gap-3">
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="mb-3 flex justify-center"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><line x1="20" y1="20" x2="15.5" y2="15.5"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Transparency</h3>
+                <p class="text-xs text-text-muted leading-relaxed">AI Registry, ATRS Tier 2 record, named AI Governance Lead, board-level AI policy</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="mb-3 flex justify-center"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="4" x2="12" y2="20"/><line x1="6" y1="20" x2="18" y2="20"/><line x1="5" y1="8" x2="19" y2="8"/><polyline points="3,14 5,8 7,14"/><polyline points="17,14 19,8 21,14"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Bias Assurance</h3>
+                <p class="text-xs text-text-muted leading-relaxed">Independent bias audit, all 9 protected characteristics, proactive disclosure, not reactive</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="mb-3 flex justify-center"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Data Sovereignty</h3>
+                <p class="text-xs text-text-muted leading-relaxed">UK or EEA residency confirmed, US CLOUD Act legal opinion obtained, no undisclosed sub-processors</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="mb-3 flex justify-center"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h9v16H5z"/><line x1="14" y1="12" x2="22" y2="12"/><polyline points="19,9 22,12 19,15"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Exit Planning</h3>
+                <p class="text-xs text-text-muted leading-relaxed">Costed exit plan, open formats, transition support period, tested and documented</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="mb-3 flex justify-center"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="11" width="3" height="9"/><rect x="11" y="6" width="3" height="14"/><rect x="16" y="14" width="3" height="6"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Continuous Monitoring</h3>
+                <p class="text-xs text-text-muted leading-relaxed">Live performance dashboard with buyer access, quarterly bias review, public incident reporting</p>
+            </div>
+        </div>
+        <div class="border-l-4 border-accent-1 pl-4 py-2 bg-glass-bg rounded-r-xl mt-4 reveal">
+            <p class="text-xs text-text-muted"><span class="text-accent-2 font-semibold">The Horizon test.</span> Could an independent auditor, with no access to your team, verify every claim you make about your AI system from documentation alone? If not, you have a governance gap.</p>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 7: AI RISK REGISTER -->
+<div class="slide" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-60px;right:-50px;background:var(--color-accent-1);opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:var(--color-accent-3);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">The Must-Have Artefact</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-2 reveal">Your AI Risk Register</h2>
+        <p class="text-text-muted text-sm mb-5 reveal">Not a theoretical exercise. A live document with named owners, reviewed quarterly, available on request within 5 working days.</p>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="reveal">
+                <h3 class="text-accent-2 font-semibold text-sm mb-3 uppercase tracking-wide">Minimum Required Fields</h3>
+                <div class="space-y-2">
+                    <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-lg p-3">
+                        <span class="text-accent-1 font-bold text-sm w-5 shrink-0">01</span>
+                        <p class="text-xs text-text-muted">AI system name, version, vendor, and functional description</p>
+                    </div>
+                    <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-lg p-3">
+                        <span class="text-accent-1 font-bold text-sm w-5 shrink-0">02</span>
+                        <p class="text-xs text-text-muted">Risk category, likelihood, impact (scored), inherent and residual</p>
+                    </div>
+                    <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-lg p-3">
+                        <span class="text-accent-1 font-bold text-sm w-5 shrink-0">03</span>
+                        <p class="text-xs text-text-muted">Named risk owner plus named technical owner, not just role titles</p>
+                    </div>
+                    <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-lg p-3">
+                        <span class="text-accent-1 font-bold text-sm w-5 shrink-0">04</span>
+                        <p class="text-xs text-text-muted">Mitigation actions, review cadence, last reviewed date</p>
+                    </div>
+                    <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-lg p-3">
+                        <span class="text-accent-1 font-bold text-sm w-5 shrink-0">05</span>
+                        <p class="text-xs text-text-muted">Bias and fairness assessment status plus independent audit flag</p>
+                    </div>
+                </div>
+            </div>
+            <div class="reveal">
+                <h3 class="text-accent-2 font-semibold text-sm mb-3 uppercase tracking-wide">Common Buyer Red Flags</h3>
+                <div class="space-y-2">
+                    <div class="flex gap-3 items-start rounded-lg p-3" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                        <span class="text-[#e8574a] text-sm">×</span>
+                        <p class="text-xs text-text-muted">Register produced for this tender, not maintained operationally</p>
+                    </div>
+                    <div class="flex gap-3 items-start rounded-lg p-3" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                        <span class="text-[#e8574a] text-sm">×</span>
+                        <p class="text-xs text-text-muted">Risks are theoretical, with no evidence of actual incidents or near-misses</p>
+                    </div>
+                    <div class="flex gap-3 items-start rounded-lg p-3" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                        <span class="text-[#e8574a] text-sm">×</span>
+                        <p class="text-xs text-text-muted">Bias assessment is self-conducted, with no independent verification</p>
+                    </div>
+                    <div class="flex gap-3 items-start rounded-lg p-3" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                        <span class="text-[#e8574a] text-sm">×</span>
+                        <p class="text-xs text-text-muted">No escalation path to board, governance sits below SLT level</p>
+                    </div>
+                    <div class="flex gap-3 items-start rounded-lg p-3" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                        <span class="text-[#e8574a] text-sm">×</span>
+                        <p class="text-xs text-text-muted">Sub-vendor AI systems not listed, only prime contractor tools disclosed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 8: SECTION WORKFORCE -->
+<div class="slide" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;background:#075056;opacity:0.16;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-40px;background:var(--color-accent-1);opacity:0.10;"></div>
+    </div>
+    <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center">
+        <p class="text-xs uppercase tracking-[6px] mb-4 reveal" style="color:#26C8B9;">Part Two</p>
+        <h2 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-bold mb-2 reveal" style="background:linear-gradient(135deg,#26C8B9,#FFC266,#FF8000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Workforce and People Integrity</h2>
+        <p class="text-text-muted mt-4 text-lg max-w-xl mx-auto reveal">The highest-risk blind spot, where AI meets employment law, social value scoring, and human rights</p>
+    </div>
+</div>
+
+<!-- SLIDE 9: WORKFORCE DIMENSIONS -->
+<div class="slide" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-60px;right:-50px;background:#075056;opacity:0.10;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:var(--color-accent-1);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">Workforce Integrity</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-5 reveal">Three Scoring Dimensions Buyers Now Assess</h2>
+        <div class="grid grid-cols-3 gap-4 mb-5">
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-5 card-magnetic reveal">
+                <div class="mb-3"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><path d="M3 19c1-3 3.5-4 6-4s5 1 6 4"/><circle cx="17" cy="8" r="2.5"/><path d="M15 19c.6-2 2-3 4-3s3 1 3 3"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Delivery Workforce</h3>
+                <p class="text-xs text-text-muted leading-relaxed mb-3">Is AI displacing staff delivering the contract? What is the plan for affected workers? Named MACs under PPN 002 T3.1 and T1.2 are now scored.</p>
+                <div class="text-xs" style="color:#26C8B9;">PPN 002 · Social Value Model</div>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-5 card-magnetic reveal">
+                <div class="mb-3"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12H2M22 12h-2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Recruitment AI</h3>
+                <p class="text-xs text-text-muted leading-relaxed mb-3">EU AI Act Annex III classes recruitment and workforce AI as high-risk from August 2026. Pre-application disclosure to candidates, a right to human review, and an independent bias audit across all 9 protected characteristics.</p>
+                <div class="text-xs" style="color:#4994A5;">EU AI Act Annex III · PSED</div>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-5 card-magnetic reveal">
+                <div class="mb-3"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><polyline points="3,12 6,9 9,12"/><path d="M6 9c0 6 4 9 9 9"/><polyline points="21,12 18,15 15,12"/><path d="M18 15c0-6-4-9-9-9"/></svg></div>
+                <h3 class="font-semibold text-sm text-accent-2 mb-2">Macro Displacement</h3>
+                <p class="text-xs text-text-muted leading-relaxed mb-3">ONS projects 70% of public sector roles face material AI exposure. Buyers expect a reskilling and redeployment policy, not a promise, but a funded programme with named training lead and outcomes tracking.</p>
+                <div class="text-xs text-accent-1">ONS 2025 · OECD AI Policy 2024</div>
+            </div>
+        </div>
+        <div class="border-l-4 pl-4 py-2 rounded-r-xl reveal" style="border-color:#e8574a;background:rgba(232,87,74,0.07);">
+            <p class="text-xs text-text-muted"><span class="font-semibold" style="color:#e8574a;">AI Laundering Warning.</span> Replacing human workers with AI then claiming social value through nominal "reskilling" programmes is now actively screened for. Buyers check whether training is substantive and outcomes-tracked, or reputational window-dressing.</p>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 10: FIVE WORKFORCE COMMITMENTS -->
+<div class="slide" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:320px;height:320px;top:-60px;right:-50px;background:#075056;opacity:0.10;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:var(--color-accent-2);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">The Standard</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-5 reveal">Five Workforce Commitments That Exceed Expectations</h2>
+        <div class="space-y-3">
+            <div class="flex gap-4 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                <span class="text-accent-1 font-bold text-lg w-6 shrink-0 mt-0.5">1</span>
+                <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Pre-application disclosure to candidates</h3><p class="text-xs text-text-muted">All candidates informed which AI tools are used in their selection process, how decisions are made, and how to request human review, before they apply.</p></div>
+            </div>
+            <div class="flex gap-4 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                <span class="text-accent-1 font-bold text-lg w-6 shrink-0 mt-0.5">2</span>
+                <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Independent annual recruitment AI bias audit</h3><p class="text-xs text-text-muted">Not self-assessed. A named independent auditor, scope covering all nine protected characteristics, outcomes published, findings actioned within 90 days.</p></div>
+            </div>
+            <div class="flex gap-4 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                <span class="text-accent-1 font-bold text-lg w-6 shrink-0 mt-0.5">3</span>
+                <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Funded reskilling programme with named outcomes</h3><p class="text-xs text-text-muted">A specific budget committed, named training lead, roles at risk identified, quarterly reporting on outcomes against MACs T3.1 baseline.</p></div>
+            </div>
+            <div class="flex gap-4 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                <span class="text-accent-1 font-bold text-lg w-6 shrink-0 mt-0.5">4</span>
+                <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Supply chain AI obligations, contractual not aspirational</h3><p class="text-xs text-text-muted">All subcontractors and interim staffing agencies bound by the same AI governance standards as the prime contractor. Audit rights included. Breach gives a contractual right.</p></div>
+            </div>
+            <div class="flex gap-4 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                <span class="text-accent-1 font-bold text-lg w-6 shrink-0 mt-0.5">5</span>
+                <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Human override carries no penalty</h3><p class="text-xs text-text-muted">Staff who override AI recommendations are not penalised in performance reviews. The override is the safeguard. Document the process, train the team, and prove it is used.</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 11: SECTION DELIVERY -->
+<div class="slide" data-slide="11">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;background:#494A00;opacity:0.18;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-40px;background:var(--color-accent-1);opacity:0.10;"></div>
+    </div>
+    <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center">
+        <p class="text-xs uppercase tracking-[6px] mb-4 reveal" style="color:#FFAF00;">Part Three</p>
+        <h2 class="font-display text-[clamp(2.8rem,6vw,5rem)] font-bold mb-2 reveal" style="background:linear-gradient(135deg,#FFAF00,#FFC266,#FF8000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Service Delivery Integrity</h2>
+        <p class="text-text-muted mt-4 text-lg max-w-xl mx-auto reveal">Where governance meets execution, and where Horizon's lesson is most directly applicable</p>
+    </div>
+</div>
+
+<!-- SLIDE 12: FIVE DELIVERY STANDARDS -->
+<div class="slide" data-slide="12">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:320px;height:320px;top:-60px;right:-50px;background:#494A00;opacity:0.10;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:var(--color-accent-1);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">Delivery Standards</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-2 reveal">Five Standards, From Horizon to Excellence</h2>
+        <p class="text-text-muted text-xs mb-4 reveal">The Horizon inquiry identified supplier information asymmetry as the root cause. These standards make your governance independently verifiable, not just supplier-certified.</p>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-3">
+                <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                    <span class="shrink-0"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="20" x2="18" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/><polygon points="12,4 6,11 18,11"/><line x1="4" y1="14" x2="9" y2="14"/><line x1="15" y1="14" x2="20" y2="14"/></svg></span>
+                    <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Independent audit rights, no Horizon asymmetry</h3><p class="text-xs text-text-muted">The buyer has a right to an independent technical audit at any point. No sole reliance on the supplier's own assurance. A named audit scope and frequency are written into the contract.</p></div>
+                </div>
+                <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                    <span class="shrink-0"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/></svg></span>
+                    <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Red team testing, before and during live service</h3><p class="text-xs text-text-muted">Adversarial testing against public sector failure scenarios. A named tester, an independent scope, results shared with the buyer, corrective actions tracked.</p></div>
+                </div>
+                <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                    <span class="shrink-0"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M8.5 8.5a5 5 0 0 1 7 0"/><path d="M5.5 5.5a9 9 0 0 1 13 0"/><path d="M2.5 2.5a13 13 0 0 1 19 0"/></svg></span>
+                    <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Live performance dashboard with buyer access</h3><p class="text-xs text-text-muted">Real-time metrics accessible to the buyer without requesting supplier involvement. Named KPIs, defined thresholds, automatic alerts on deviation.</p></div>
+                </div>
+            </div>
+            <div class="space-y-3">
+                <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                    <span class="shrink-0"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4,12 10,18 20,6"/></svg></span>
+                    <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Output validation process, named methodology</h3><p class="text-xs text-text-muted">Random sampling of AI outputs by a named human validator. A correction log is maintained. The buyer can request the correction log within 24 hours.</p></div>
+                </div>
+                <div class="flex gap-3 items-start bg-glass-bg border border-glass-border rounded-xl p-4 reveal">
+                    <span class="shrink-0"><svg class="icn" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14a4 4 0 0 1 0-6l3-3a4 4 0 0 1 6 6l-1.5 1.5"/><path d="M15 10a4 4 0 0 1 0 6l-3 3a4 4 0 0 1-6-6l1.5-1.5"/></svg></span>
+                    <div><h3 class="font-semibold text-sm text-accent-2 mb-1">Supply chain AI governance, end to end</h3><p class="text-xs text-text-muted">Sub-vendor AI systems disclosed, audited annually, and contractually bound. A change notification SLA is included. The buyer must be informed of any material AI system change within 5 working days.</p></div>
+                </div>
+                <div class="horizon-card rounded-xl p-4 reveal">
+                    <p class="text-xs text-text-muted italic"><span class="font-semibold" style="color:#e8574a;">The Horizon principle.</span> "The system never lies." Those words, and the institutional culture they represent, allowed 700+ wrongful convictions. Your governance must be designed so that no one in your organisation, or your client's, can ever operate on that assumption.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 13: EIGHT COMPLACENCY TRAPS -->
+<div class="slide" data-slide="13">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-50px;background:#e8574a;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-30px;background:var(--color-accent-1);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-[#e8574a] mb-2 reveal">Where Suppliers Lose Marks</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-4 reveal">The Eight Complacency Traps</h2>
+        <div class="grid grid-cols-4 gap-3">
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">01 Disclosure gaps</div>
+                <p class="text-xs text-text-muted">Not naming every AI tool in use, especially embedded third-party or sub-vendor models</p>
+            </div>
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">02 ATRS obstruction</div>
+                <p class="text-xs text-text-muted">Claiming commercial sensitivity to avoid publishing Tier 2 algorithmic records</p>
+            </div>
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">03 Self-certified bias</div>
+                <p class="text-xs text-text-muted">Bias assessments conducted internally with no independent verification or methodology disclosure</p>
+            </div>
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">04 Aspirational MACs</div>
+                <p class="text-xs text-text-muted">Social value commitments with no budget allocation, named lead, or outcome-tracking mechanism</p>
+            </div>
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">05 Static compliance</div>
+                <p class="text-xs text-text-muted">A one-time certification with no monitoring process. Governance decays within weeks of contract start</p>
+            </div>
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">06 Sub-vendor blindness</div>
+                <p class="text-xs text-text-muted">AI governance applied only to prime contractor systems, with sub-vendor AI disclosed as "out of scope"</p>
+            </div>
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">07 Human override penalty</div>
+                <p class="text-xs text-text-muted">Staff have override rights but are performance-managed against AI agreement rates, neutering the safeguard</p>
+            </div>
+            <div class="rounded-xl p-3 reveal" style="background:rgba(232,87,74,0.08);border:1px solid rgba(232,87,74,0.2);">
+                <div class="text-[#e8574a] font-bold text-sm mb-1">08 Tender-only artefacts</div>
+                <p class="text-xs text-text-muted">Governance documents produced for the bid, not maintained operationally. Buyers test this in contract management reviews.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 14: GLOBAL BENCHMARKS -->
+<div class="slide" data-slide="14">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-60px;right:-50px;background:var(--color-accent-1);opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:var(--color-accent-3);opacity:0.07;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">International Benchmarks</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-4 reveal">The Convergent Global Standard</h2>
+        <div class="overflow-hidden rounded-xl border border-glass-border reveal">
+            <table class="w-full text-xs">
+                <thead>
+                    <tr style="background:rgba(255,128,0,0.18);">
+                        <th class="text-left p-3 text-accent-2 font-semibold">Jurisdiction</th>
+                        <th class="text-left p-3 text-accent-2 font-semibold">Key Standard</th>
+                        <th class="text-left p-3 text-accent-2 font-semibold">Workforce Obligation</th>
+                        <th class="text-left p-3 text-accent-2 font-semibold">Audit Requirement</th>
+                        <th class="text-left p-3 text-accent-2 font-semibold">Effective</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:rgba(255,255,255,0.03);">
+                        <td class="p-3 font-semibold text-accent-1">UK Government / Cabinet Office</td>
+                        <td class="p-3 text-text-muted">PPN 017 plus ATRS plus Procurement Act</td>
+                        <td class="p-3 text-text-muted">PPN 002 Social Value MACs</td>
+                        <td class="p-3 text-text-muted">ATRS Tier 2 on request</td>
+                        <td class="p-3 text-text-secondary">Feb 2025</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.015);">
+                        <td class="p-3 font-semibold text-accent-1">NHS England</td>
+                        <td class="p-3 text-text-muted">DTAC (updated Apr 2026) plus DCB0129</td>
+                        <td class="p-3 text-text-muted">Clinical safety officer mandatory</td>
+                        <td class="p-3 text-text-muted">Clinical safety audit plus DTAC assessment</td>
+                        <td class="p-3 text-text-secondary">Apr 2026</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.03);">
+                        <td class="p-3 font-semibold text-accent-1">Local Government (LGA)</td>
+                        <td class="p-3 text-text-muted">Responsible Buying Guide Apr 2025</td>
+                        <td class="p-3 text-text-muted">PSED, workforce equality evidence</td>
+                        <td class="p-3 text-text-muted">Equality impact assessment</td>
+                        <td class="p-3 text-text-secondary">Apr 2025</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.015);">
+                        <td class="p-3 font-semibold" style="color:#4994A5;">European Union</td>
+                        <td class="p-3 text-text-muted">EU AI Act, Annex III high-risk</td>
+                        <td class="p-3 text-text-muted">Recruitment AI, pre-application disclosure and human review right</td>
+                        <td class="p-3 text-text-muted">Conformity assessment plus technical docs</td>
+                        <td class="p-3 text-text-secondary">Aug 2026</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.03);">
+                        <td class="p-3 font-semibold text-accent-1">Australia (APS)</td>
+                        <td class="p-3 text-text-muted">APS AI Ethics Framework 2024</td>
+                        <td class="p-3 text-text-muted">Workforce impact assessment required</td>
+                        <td class="p-3 text-text-muted">Independent algorithmic audit</td>
+                        <td class="p-3 text-text-secondary">2024</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.015);">
+                        <td class="p-3 font-semibold text-accent-1">Canada (TBS)</td>
+                        <td class="p-3 text-text-muted">Directive on Automated Decision-Making</td>
+                        <td class="p-3 text-text-muted">Impact level determines human review</td>
+                        <td class="p-3 text-text-muted">Peer review plus public notice</td>
+                        <td class="p-3 text-text-secondary">2023</td>
+                    </tr>
+                    <tr style="background:rgba(255,255,255,0.03);">
+                        <td class="p-3 font-semibold text-accent-1">OECD AI Principles</td>
+                        <td class="p-3 text-text-muted">OECD.AI Policy Observatory 2024</td>
+                        <td class="p-3 text-text-muted">Worker transition support expected</td>
+                        <td class="p-3 text-text-muted">Transparency plus accountability outline</td>
+                        <td class="p-3 text-text-secondary">Ongoing</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-xs text-text-muted mt-3 reveal">The convergence across jurisdictions signals a global minimum standard. Suppliers operating internationally face compounding obligations. Meet the highest applicable standard and document why.</p>
+    </div>
+</div>
+
+<!-- SLIDE 15: FIVE PILLARS OF EXCELLENCE -->
+<div class="slide" data-slide="15">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:var(--color-accent-1);opacity:0.10;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-50px;left:-40px;background:var(--color-accent-3);opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <p class="text-xs uppercase tracking-[4px] text-accent-1 mb-2 reveal">The Excellence Standard</p>
+        <h2 class="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-bold mb-5 reveal">Five Pillars of Supplier Excellence</h2>
+        <div class="grid grid-cols-5 gap-3">
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style="background:rgba(255,128,0,0.2);"><span class="font-bold text-accent-1 text-sm">P1</span></div>
+                <h3 class="font-semibold text-xs text-accent-2 mb-2">Proactive Transparency</h3>
+                <p class="text-xs text-text-muted leading-relaxed">Disclose before asked. Publish your AI Registry and ATRS records. Name your AI Governance Lead publicly.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style="background:rgba(73,148,165,0.22);"><span class="font-bold text-[#4994A5] text-sm">P2</span></div>
+                <h3 class="font-semibold text-xs text-accent-2 mb-2">Independent Verification</h3>
+                <p class="text-xs text-text-muted leading-relaxed">Every material claim independently audited. Bias assessments, technical audits, and red team reports by named third parties.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style="background:rgba(38,200,185,0.22);"><span class="font-bold text-sm" style="color:#26C8B9;">P3</span></div>
+                <h3 class="font-semibold text-xs text-accent-2 mb-2">Workforce Dignity</h3>
+                <p class="text-xs text-text-muted leading-relaxed">Candidate disclosure, human override, reskilling with outcomes, supply chain obligations. People are not a compliance box.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style="background:rgba(255,175,0,0.22);"><span class="font-bold text-[#FFAF00] text-sm">P4</span></div>
+                <h3 class="font-semibold text-xs text-accent-2 mb-2">Continuous Governance</h3>
+                <p class="text-xs text-text-muted leading-relaxed">Governance is live and operational, not tender-produced. Quarterly reviews, named owners, board escalation routes.</p>
+            </div>
+            <div class="bg-glass-bg backdrop-blur-xl border border-glass-border rounded-xl p-4 card-magnetic reveal text-center">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3" style="background:rgba(232,87,74,0.2);"><span class="font-bold text-[#e8574a] text-sm">P5</span></div>
+                <h3 class="font-semibold text-xs text-accent-2 mb-2">Regulatory Agility</h3>
+                <p class="text-xs text-text-muted leading-relaxed">A named compliance owner monitoring regulatory change. EU AI Act Aug 2026 plan documented and boarded. ISO 42001 roadmap in place.</p>
+            </div>
+        </div>
+        <div class="border-l-4 border-accent-1 pl-4 py-2 bg-glass-bg rounded-r-xl mt-4 reveal">
+            <p class="text-xs text-text-muted"><span class="text-accent-2 font-semibold">The proof portfolio.</span> Nine artefacts separate excellent from compliant. AI Registry, ATRS record, Risk Register, Bias Audit, Data Residency Statement, Human Override Process, Social Value Plan, Supply Chain AI Clause, and Regulatory Monitoring Log. All in the accompanying Scorecard and Evidence Tracker.</p>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 16: CLOSING -->
+<div class="slide" data-slide="16">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:520px;height:520px;top:-120px;right:-100px;background:var(--color-accent-1);opacity:0.13;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:var(--color-accent-3);opacity:0.12;"></div>
+        <div class="blob" style="width:240px;height:240px;top:35%;left:15%;background:var(--color-accent-2);opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center">
+        <div class="mb-6 flex justify-center animate-[float_3s_ease-in-out_infinite]">
+            <svg class="icn-lg" viewBox="0 0 64 64" aria-hidden="true"><polyline points="14,42 32,22 50,42"/></svg>
+        </div>
+        <h2 class="font-display text-[clamp(2rem,4.5vw,3.8rem)] font-bold bg-linear-to-br from-accent-1 via-accent-2 to-accent-1 bg-clip-text text-transparent tracking-tight mb-4 reveal">The Competitive Advantage</h2>
+        <p class="text-text-muted max-w-2xl mx-auto text-base leading-relaxed mb-8 reveal">Most suppliers treat AI governance as a compliance burden. The winners treat it as a differentiator. In a market where buyers are trained to look for the Horizon pattern, your governance is your pitch.</p>
+        <div class="grid grid-cols-4 gap-4 mb-6 reveal">
+            <div class="bg-glass-bg border border-glass-border rounded-xl p-4"><div class="text-accent-1 font-bold text-lg mb-1">Disclose</div><p class="text-xs text-text-muted">Before you are asked</p></div>
+            <div class="bg-glass-bg border border-glass-border rounded-xl p-4"><div class="text-accent-1 font-bold text-lg mb-1">Verify</div><p class="text-xs text-text-muted">Independently, not internally</p></div>
+            <div class="bg-glass-bg border border-glass-border rounded-xl p-4"><div class="text-accent-1 font-bold text-lg mb-1">Protect</div><p class="text-xs text-text-muted">People, not just processes</p></div>
+            <div class="bg-glass-bg border border-glass-border rounded-xl p-4"><div class="text-accent-1 font-bold text-lg mb-1">Demonstrate</div><p class="text-xs text-text-muted">Evidence, not assertion</p></div>
+        </div>
+        <p class="text-xs text-text-muted uppercase tracking-[4px] reveal">RPNA · AI Accountability for Public Sector Suppliers · 2026</p>
+    </div>
+</div>
+
+<!-- SLIDE 17: WORK WITH US -->
+<div class="slide" data-slide="17">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:540px;height:540px;top:-130px;right:-110px;background:var(--color-accent-1);opacity:0.14;"></div>
+        <div class="blob" style="width:340px;height:340px;bottom:-90px;left:-70px;background:var(--color-accent-3);opacity:0.12;"></div>
+        <div class="blob" style="width:260px;height:260px;top:30%;left:12%;background:var(--color-accent-2);opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content text-center">
+        <p class="text-xs uppercase tracking-[6px] text-accent-1 mb-5 reveal">Next Step</p>
+        <h2 class="font-display font-bold bg-linear-to-br from-accent-1 via-accent-2 to-accent-1 bg-clip-text text-transparent tracking-tight mb-6 reveal">Join us in the Future of Work.<br>Win More.</h2>
+        <p class="text-text-secondary max-w-2xl mx-auto text-base leading-relaxed mb-10 reveal">Bid stronger. Make Responsible AI an asset.</p>
+        <div class="reveal">
+            <a class="contact-cta" href="mailto:richard.hanrahan@therpna.co.uk">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3,7 12,13 21,7"/></svg>
+                richard.hanrahan@therpna.co.uk
+            </a>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+    // Inject RPNA logo top-right and confidential footer bottom-left on every slide
+    document.querySelectorAll('.slide').forEach(slide => {
+        const logo = document.createElement('img');
+        logo.src = 'assets/logo-orange-transparent.png';
+        logo.alt = 'RPNA';
+        logo.className = 'slide-logo';
+        slide.appendChild(logo);
+
+        const conf = document.createElement('div');
+        conf.className = 'slide-confidential';
+        conf.textContent = 'Company Confidential · RPNA Ltd.';
+        slide.appendChild(conf);
+    });
+
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+    const dotsContainer = document.getElementById('dots');
+    const counter = document.getElementById('counter');
+    for (let i = 1; i <= total; i++) { const dot = document.createElement('div'); dot.className = 'dot' + (i === 1 ? ' active' : ''); dot.onclick = () => goToSlide(i); dotsContainer.appendChild(dot); }
+    function goToSlide(n) { const prev = document.querySelector('.slide.active'); const next = document.querySelector(`.slide[data-slide="${n}"]`); if (prev) prev.classList.remove('active'); if (next) { next.classList.add('active'); animateSlide(next); } current = n; updateNav(); }
+    function changeSlide(dir) { let next = current + dir; if (next < 1) next = total; if (next > total) next = 1; goToSlide(next); }
+    function updateNav() { document.querySelectorAll('.dot').forEach((d, i) => { d.classList.toggle('active', i + 1 === current); }); counter.textContent = current + ' / ' + total; }
+    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+    function animateSlide(slide) {
+        slide.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; el.offsetHeight;
+            const delay = i * 0.08;
+            el.style.transition = `opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;
+            el.style.opacity = '1'; el.style.transform = 'translateY(0px)';
+        });
+        slide.querySelectorAll('.bar-fill:not(.fill-init)').forEach((bar, i) => {
+            bar.classList.add('fill-init'); bar.style.width = '0%'; bar.style.transition = `width 0.6s ease ${i * 0.1}s`; bar.offsetHeight; bar.style.width = bar.dataset.width + '%';
+        });
+    }
+    document.addEventListener('mousemove', (e) => {
+        const spotlight = document.querySelector('.mouse-spotlight');
+        if (spotlight) spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(255,128,0,0.06), transparent 40%)`;
+    });
+    window.initParticles = function(canvas, options) {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d'); canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+        const interactive = options.interactive !== false; const count = options.count || (interactive ? 55 : 18); let mx = -1000, my = -1000;
+        const particles = Array.from({ length: count }, () => ({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, size: Math.random() * 2.5 + 0.8, alpha: Math.random() * 0.35 + 0.1 }));
+        if (interactive) { canvas.addEventListener('mousemove', (e) => { const rect = canvas.getBoundingClientRect(); mx = e.clientX - rect.left; my = e.clientY - rect.top; }); canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; }); }
+        (function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                if (interactive) { const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx * dx + dy * dy); if (dist < 120) { const force = (120 - dist) / 120 * 2; p.vx += (dx / dist) * force * 0.1; p.vy += (dy / dist) * force * 0.1; } }
+                p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0; if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,128,0,${p.alpha})`; ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        })();
+    };
+    document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { interactive: true, count: 55 }));
+    document.querySelectorAll('.particle-canvas-ambient').forEach(c => window.initParticles(c, { interactive: false, count: 18 }));
+    try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn(e); }
+</script>
+</body>
+</html>
