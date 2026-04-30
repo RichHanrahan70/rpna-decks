@@ -1,117 +1,835 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>RPNA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --color-bg: #0d1b2a;
-            --color-text: #e8edf4;
-            --color-text-muted: #7a8fa8;
-            --color-accent: #FF8000;
-            --color-glass-border: rgba(255,255,255,0.09);
-            --font-display: 'Arvo', Georgia, serif;
-            --font-body: 'Nunito', system-ui, sans-serif;
-        }
-        *, *::before, *::after { box-sizing: border-box; }
-        html, body { margin: 0; height: 100%; }
-        body {
-            background: var(--color-bg);
-            color: var(--color-text);
-            font-family: var(--font-body);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .blob-1 { width: 480px; height: 480px; top: -120px; right: -120px; background: var(--color-accent); opacity: 0.12; }
-        .blob-2 { width: 360px; height: 360px; bottom: -100px; left: -80px; background: #4994A5; opacity: 0.10; }
-        main {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: clamp(1.5rem, 4vw, 3rem);
-            max-width: 560px;
-        }
-        .logo {
-            height: clamp(40px, 4vw, 56px);
-            width: auto;
-            margin-bottom: clamp(2rem, 4vw, 3rem);
-            opacity: 0.95;
-        }
-        h1 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-            margin: 0 0 0.75rem;
-            line-height: 1.2;
-            color: var(--color-text);
-        }
-        .sub {
-            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
-            color: var(--color-text-muted);
-            line-height: 1.55;
-            margin: 0 0 2rem;
-        }
-        .contact {
-            font-size: 0.85rem;
-            color: var(--color-text-muted);
-        }
-        .contact a {
-            color: var(--color-accent);
-            text-decoration: none;
-            border-bottom: 1px solid rgba(255,128,0,0.4);
-            padding-bottom: 1px;
-            transition: border-color 0.3s ease, color 0.3s ease;
-        }
-        .contact a:hover {
-            color: #FFC266;
-            border-bottom-color: #FFC266;
-        }
-        footer {
-            position: absolute;
-            bottom: clamp(16px, 2vw, 24px);
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.7rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--color-text-muted);
-            opacity: 0.7;
-            z-index: 2;
-            white-space: nowrap;
-        }
-        @media (max-width: 480px) {
-            footer { font-size: 0.6rem; bottom: 14px; }
-            main { padding: 1.5rem; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>AI Accountability for Public Sector Suppliers — Executive Summary — RPNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --color-bg:        #0d1b2a;
+    --color-bg-deep:   #070f18;
+    --color-surface:   rgba(21,36,54,0.6);
+    --color-text:      #e8edf4;
+    --color-text-soft: #d8dfe9;
+    --color-text-muted:#7a8fa8;
+    --color-accent-1:  #FF8000;
+    --color-accent-2:  #FFC266;
+    --color-accent-3:  #4994A5;
+    --color-warn:      #e8574a;
+    --color-rule:      rgba(255,128,0,0.18);
+    --color-glass-border: rgba(255,255,255,0.09);
+    --font-display: 'Arvo', 'Rockwell', Georgia, serif;
+    --font-body:    'Nunito', 'Segoe UI', system-ui, sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text-soft);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ─── PAGE WRAPPER ─── */
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0;
+  }
+
+  /* ─── ANIMATED BACKGROUND ─── */
+  .bg-mesh {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+  }
+  @keyframes drift {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(-40px,-50px) scale(1.1); }
+    66% { transform: translate(50px,30px) scale(0.9); }
+  }
+  .blob-1 { width:520px;height:520px;top:-110px;right:-110px;background:var(--color-accent-1);opacity:0.10;animation:drift 18s ease-in-out infinite; }
+  .blob-2 { width:380px;height:380px;bottom:-90px;left:-70px;background:var(--color-accent-3);opacity:0.12;animation:drift 22s ease-in-out infinite reverse; }
+  .blob-3 { width:240px;height:240px;top:40%;left:30%;background:var(--color-accent-2);opacity:0.06;animation:drift 14s ease-in-out infinite 4s; }
+
+  /* ─── PAGE-LEVEL LOGO AND FOOTER (mirror the deck) ─── */
+  .page-logo {
+    position: fixed;
+    top: clamp(20px, 2.6vw, 32px);
+    right: clamp(20px, 2.6vw, 36px);
+    height: clamp(34px, 3.5vw, 48px);
+    width: auto;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.95;
+  }
+  .page-confidential {
+    position: fixed;
+    bottom: clamp(14px, 2vw, 22px);
+    left: clamp(20px, 2.6vw, 32px);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    opacity: 0.75;
+    z-index: 10;
+    pointer-events: none;
+    font-weight: 500;
+  }
+
+  /* ─── CONTENT ─── */
+  .content-wrap {
+    position: relative;
+    z-index: 2;
+    padding: 88px 64px 96px;
+  }
+
+  /* ─── DOC META STRIP ─── */
+  .doc-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent-1);
+    margin-bottom: 28px;
+    font-weight: 600;
+  }
+  .doc-meta::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--color-accent-1);
+  }
+  .doc-meta .meta-soft {
+    color: var(--color-text-muted);
+    font-weight: 400;
+    letter-spacing: 0.14em;
+  }
+
+  /* ─── HERO ─── */
+  .hero { margin-bottom: 48px; }
+  .hero-kicker {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-accent-1);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-kicker::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--color-accent-1);
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.18;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+    margin-bottom: 22px;
+    max-width: 760px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--color-accent-2);
+    font-weight: 700;
+  }
+  .hero-lead {
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--color-text-soft);
+    max-width: 680px;
+  }
+
+  /* ─── DIVIDER ─── */
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--color-rule);
+    margin: 40px 0;
+  }
+
+  /* ─── STAT STRIP ─── */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--color-rule);
+    border: 1px solid var(--color-rule);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 44px;
+  }
+  .stat-cell {
+    background: var(--color-surface);
+    backdrop-filter: blur(8px);
+    padding: 26px 24px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--color-accent-1);
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  /* ─── SECTION HEADINGS ─── */
+  .sec-head {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent-1);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sec-head::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-rule);
+  }
+  .sec-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+  .sec-body {
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--color-text-soft);
+  }
+
+  /* ─── WARNING BOX ─── */
+  .warning-box {
+    background: rgba(232,87,74,0.08);
+    border: 1px solid rgba(232,87,74,0.25);
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin-bottom: 44px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .warning-icon { flex-shrink: 0; margin-top: 2px; }
+  .warning-icon svg { width: 26px; height: 26px; stroke: var(--color-warn); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .warning-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-warn);
+    margin-bottom: 8px;
+  }
+  .warning-text {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--color-text-soft);
+    line-height: 1.7;
+  }
+  .warning-text strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  /* ─── TWO-COLUMN BLOCK ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 44px;
+  }
+
+  /* ─── PILLAR LIST ─── */
+  .pillar-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .pillar-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 18px;
+    background: var(--color-surface);
+    border: 1px solid rgba(255,128,0,0.12);
+    border-radius: 6px;
+    transition: border-color 0.25s ease, transform 0.2s ease;
+  }
+  .pillar-item:hover {
+    border-color: rgba(255,128,0,0.35);
+    transform: translateY(-2px);
+  }
+  .pillar-num {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-accent-1);
+    line-height: 1;
+    min-width: 26px;
+    margin-top: 2px;
+  }
+  .pillar-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+  .pillar-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* ─── REGULATORY PILLS ─── */
+  .reg-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .reg-pill {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-accent-2);
+    background: rgba(255,128,0,0.08);
+    border: 1px solid rgba(255,128,0,0.25);
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+
+  /* ─── COMPLACENCY GRID ─── */
+  .complacency-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .complacency-item {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    padding: 9px 11px;
+    background: var(--color-surface);
+    border-radius: 5px;
+    border-left: 2px solid rgba(255,128,0,0.4);
+  }
+
+  /* ─── CASE STRIP ─── */
+  .case-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+  .case-card {
+    padding: 18px;
+    border-radius: 6px;
+    border: 1px solid;
+    background: var(--color-surface);
+  }
+  .case-card.red    { background: rgba(232,87,74,0.07); border-color: rgba(232,87,74,0.25); }
+  .case-card.orange { background: rgba(255,128,0,0.07); border-color: rgba(255,128,0,0.30); }
+  .case-card.blue   { background: rgba(73,148,165,0.09); border-color: rgba(73,148,165,0.30); }
+  .case-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .case-card.red .case-label    { color: var(--color-warn); }
+  .case-card.orange .case-label { color: var(--color-accent-1); }
+  .case-card.blue .case-label   { color: var(--color-accent-3); }
+  .case-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .case-text {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  .case-lesson {
+    margin-top: 10px;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    line-height: 1.5;
+  }
+
+  /* ─── TOOLKIT GRID ─── */
+  .toolkit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 44px;
+  }
+  .toolkit-card {
+    padding: 20px 22px;
+    background: var(--color-surface);
+    border: 1px solid rgba(255,128,0,0.14);
+    border-radius: 6px;
+    transition: border-color 0.25s ease, transform 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .toolkit-card:hover {
+    border-color: rgba(255,128,0,0.4);
+    transform: translateY(-3px);
+  }
+  .tk-icon {
+    margin-bottom: 12px;
+    display: block;
+  }
+  .tk-icon svg { width: 28px; height: 28px; stroke: var(--color-accent-1); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .tk-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 6px;
+  }
+  .tk-desc {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  .tk-tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent-1);
+    background: rgba(255,128,0,0.1);
+    border: 1px solid rgba(255,128,0,0.25);
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+  .tk-tag.available {
+    color: #26C8B9;
+    background: rgba(38,200,185,0.1);
+    border-color: rgba(38,200,185,0.3);
+  }
+
+  /* ─── FOOTER CTA ─── */
+  .doc-footer {
+    padding-top: 36px;
+    border-top: 1px solid var(--color-rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .footer-cta-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+  .footer-cta-text {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--color-text-muted);
+    max-width: 420px;
+    line-height: 1.65;
+  }
+  .footer-cta-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-accent-2);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,194,102,0.4);
+    padding-bottom: 1px;
+    transition: color 0.25s ease, border-color 0.25s ease;
+  }
+  .footer-cta-link:hover { color: var(--color-accent-1); border-color: var(--color-accent-1); }
+  .footer-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .footer-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 18px;
+    background: rgba(255,128,0,0.08);
+    border: 1px solid rgba(255,128,0,0.22);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-accent-2);
+    min-width: 240px;
+  }
+  .footer-badge svg { width: 18px; height: 18px; stroke: var(--color-accent-2); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── MOBILE & TABLET ─── */
+  @media (max-width: 1024px) {
+    .content-wrap { padding: 80px 40px 88px; }
+  }
+  @media (max-width: 768px) {
+    .content-wrap { padding: 70px 24px 80px; }
+    .stat-strip { grid-template-columns: 1fr; }
+    .stat-cell { padding: 22px 20px; }
+    .two-col { grid-template-columns: 1fr; gap: 36px; }
+    .case-strip { grid-template-columns: 1fr; }
+    .toolkit-grid { grid-template-columns: 1fr; }
+    .complacency-grid { grid-template-columns: 1fr; }
+    .doc-footer { flex-direction: column; align-items: flex-start; }
+    .footer-badges { width: 100%; }
+    .footer-badge { min-width: 0; width: 100%; }
+    .page-logo { top: 14px; right: 14px; height: 28px; }
+    .page-confidential { bottom: 12px; left: 14px; font-size: 0.62rem; }
+    .hero h1 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  }
+  @media (max-width: 480px) {
+    .content-wrap { padding: 64px 18px 72px; }
+    .page-logo { height: 24px; }
+    .page-confidential { font-size: 0.58rem; bottom: 10px; }
+  }
+
+  /* ─── PRINT ─── */
+  @media print {
+    body { background: #fff !important; color: #111 !important; }
+    .bg-mesh, .page-logo, .page-confidential { display: none !important; }
+    .content-wrap { padding: 32px 40px !important; }
+    .pillar-item, .toolkit-card, .case-card, .stat-cell, .warning-box, .complacency-item {
+      background: #f9f9f9 !important;
+      border-color: rgba(0,0,0,0.15) !important;
+      color: #222 !important;
+    }
+    .footer-badge { background: #f5f5f5 !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    h1, .sec-title, .case-name, .footer-cta-title, .pillar-title, .tk-title { color: #111 !important; }
+    .stat-num, .pillar-num { color: #A95300 !important; }
+    .hero-lead, .sec-body, .pillar-desc, .case-text, .tk-desc, .footer-cta-text, .complacency-item { color: #444 !important; }
+  }
+</style>
 </head>
 <body>
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
 
-    <main>
-        <img class="logo" src="assets/logo-orange-transparent.png" alt="RPNA">
-        <h1>Private deck library.</h1>
-        <p class="sub">Please use the direct link you've been sent. If you've lost it, get in touch.</p>
-        <p class="contact"><a href="mailto:richard.hanrahan@therpna.co.uk">richard.hanrahan@therpna.co.uk</a></p>
-    </main>
+<div class="bg-mesh" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
 
-    <footer>Company Confidential · RPNA Ltd.</footer>
+<img class="page-logo" src="assets/logo-orange-transparent.png" alt="RPNA">
+<div class="page-confidential">Company Confidential · RPNA Ltd.</div>
+
+<div class="page">
+  <div class="content-wrap">
+
+    <!-- META -->
+    <div class="doc-meta reveal">
+      Executive Summary <span class="meta-soft">· April 2026 · Version 1.0</span>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero reveal" style="transition-delay:0.08s">
+      <h1>AI in Public Sector Procurement.<br><em>A Playbook for Suppliers Who Intend to Win.</em></h1>
+      <p class="hero-lead">
+        Buying teams across UK central government, NHS, and local authorities are now actively probing AI impacts on delivery, people, and risk. This is no longer a future consideration. It is live in evaluation criteria today. Suppliers who treat it as compliance theatre will lose marks. Those who lead the conversation will gain decisive competitive advantage.
+      </p>
+    </section>
+
+    <!-- STAT STRIP -->
+    <div class="stat-strip reveal" style="transition-delay:0.14s">
+      <div class="stat-cell">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Regulatory instruments now active</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">85</div>
+        <div class="stat-label">Evaluator questions mapped across 5 domains</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">28</div>
+        <div class="stat-label">Scored criteria in the self-assessment scorecard</div>
+      </div>
+    </div>
+
+    <!-- WARNING BOX -->
+    <div class="warning-box reveal" style="transition-delay:0.18s">
+      <div class="warning-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 L22 21 L2 21 Z"/><line x1="12" y1="10" x2="12" y2="15"/><circle cx="12" cy="18" r="0.6" fill="currentColor"/></svg>
+      </div>
+      <div>
+        <div class="warning-title">The Horizon Principle. What Buyers Are Trained to Detect.</div>
+        <div class="warning-text">
+          Three cases now define buyer scrutiny. <strong>Post Office Horizon</strong>, not AI, but the governance failure that defines the doctrine. Information asymmetry plus blind institutional trust equals catastrophic harm at scale. <strong>Dutch SyRI</strong>, the first court ruling to halt an AI system (The Hague, Feb 2020) on fundamental rights grounds. <strong>DWP Universal Credit AI</strong>, active today, scoring around 1M claims a year. Bias by age, disability, and nationality disclosed via FOI. Evaluators are trained on all three. Suppliers must demonstrate they have learned the same lessons.
+        </div>
+      </div>
+    </div>
+
+    <!-- TWO-COLUMN -->
+    <div class="two-col reveal" style="transition-delay:0.22s">
+
+      <div>
+        <div class="sec-head">The Five Pillars</div>
+        <ul class="pillar-list">
+          <li class="pillar-item">
+            <div class="pillar-num">1</div>
+            <div>
+              <div class="pillar-title">Risk Mitigation and Transparency</div>
+              <div class="pillar-desc">AI Risk Register, bias assurance, data sovereignty, exit planning, and continuous monitoring, all auditable on request.</div>
+            </div>
+          </li>
+          <li class="pillar-item">
+            <div class="pillar-num">2</div>
+            <div>
+              <div class="pillar-title">Workforce and People Integrity</div>
+              <div class="pillar-desc">Social value scoring, AI in recruitment disclosure, macro displacement planning, and anti-laundering in interim staffing.</div>
+            </div>
+          </li>
+          <li class="pillar-item">
+            <div class="pillar-num">3</div>
+            <div>
+              <div class="pillar-title">Service Delivery Standards</div>
+              <div class="pillar-desc">Human oversight requirements, post-Horizon governance culture, active monitoring, and supply chain AI accountability.</div>
+            </div>
+          </li>
+          <li class="pillar-item">
+            <div class="pillar-num">4</div>
+            <div>
+              <div class="pillar-title">Governance and Accountability</div>
+              <div class="pillar-desc">Board-level AI ownership, ATRS compliance, algorithmic transparency records, and third-party audit readiness.</div>
+            </div>
+          </li>
+          <li class="pillar-item">
+            <div class="pillar-num">5</div>
+            <div>
+              <div class="pillar-title">Continuous Improvement</div>
+              <div class="pillar-desc">Proactive disclosure, regulatory horizon-scanning, incident response protocols, and iterative assurance cadence.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="sec-head">Regulatory Imperative</div>
+        <p class="sec-body" style="margin-bottom:14px;">
+          The regulatory stack is live. Suppliers who cannot map their AI posture to each instrument face mark deductions at evaluation and potential exclusion under the Procurement Act 2023 Debarment Register.
+        </p>
+        <div class="reg-pills">
+          <span class="reg-pill">Procurement Act 2023</span>
+          <span class="reg-pill">PPN 017 AI Transparency</span>
+          <span class="reg-pill">PPN 002 Social Value</span>
+          <span class="reg-pill">NHS DTAC</span>
+          <span class="reg-pill">EU AI Act (Aug 2026)</span>
+          <span class="reg-pill">ATRS Standard</span>
+        </div>
+
+        <div style="margin-top: 32px;">
+          <div class="sec-head">The Eight Complacency Traps</div>
+          <p class="sec-body" style="margin-bottom: 12px;">Suppliers commonly lose marks by falling into these failure modes.</p>
+          <div class="complacency-grid">
+            <div class="complacency-item">Static compliance posture</div>
+            <div class="complacency-item">Incomplete workforce disclosure</div>
+            <div class="complacency-item">Opacity on subcontractors</div>
+            <div class="complacency-item">ATRS obstruction or delay</div>
+            <div class="complacency-item">No bias testing evidence</div>
+            <div class="complacency-item">Absent exit or continuity plan</div>
+            <div class="complacency-item">No named AI accountability</div>
+            <div class="complacency-item">Treating AI as just IT risk</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="rule">
+
+    <!-- CASE STRIP -->
+    <div class="reveal" style="transition-delay:0.1s;margin-bottom:18px;">
+      <div class="sec-head">Three Cases Every Evaluator Now Knows</div>
+    </div>
+    <div class="case-strip reveal" style="transition-delay:0.14s">
+      <div class="case-card red">
+        <div class="case-label">Governance Failure</div>
+        <div class="case-name">Post Office Horizon</div>
+        <div class="case-text">700+ wrongful convictions. The supplier concealed defects. The institution trusted outputs blindly. Not AI, but the doctrine it created underpins every AI governance question asked today.</div>
+        <div class="case-lesson">"The system never lies." The culture buyers are trained to break in suppliers.</div>
+      </div>
+      <div class="case-card orange">
+        <div class="case-label">Court-Halted AI System</div>
+        <div class="case-name">Dutch SyRI</div>
+        <div class="case-text">An ML algorithm scored low-income communities for fraud risk. The Hague court halted it in Feb 2020, the first ever ruling to stop an AI system on ECHR Art. 8 grounds.</div>
+        <div class="case-lesson">Hidden algorithmic harm violates fundamental rights, and will be litigated.</div>
+      </div>
+      <div class="case-card blue">
+        <div class="case-label">Active UK System · 2024</div>
+        <div class="case-name">DWP Universal Credit AI</div>
+        <div class="case-text">Scores around 1M claims a year. Internal analysis found bias by age, disability, and nationality. Disclosed via FOI, not proactively. Passive monitoring is not enough.</div>
+        <div class="case-lesson">Proactive disclosure is now the expected standard, not reactive compliance.</div>
+      </div>
+    </div>
+
+    <hr class="rule">
+
+    <!-- TOOLKIT -->
+    <div class="sec-head reveal" style="transition-delay:0.1s">What We Provide</div>
+    <div class="toolkit-grid reveal" style="transition-delay:0.15s">
+
+      <div class="toolkit-card">
+        <span class="tk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1.5"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></span>
+        <div class="tk-title">The Playbook. Deep Research Report.</div>
+        <div class="tk-desc">Analysis of UK Government, NHS, LGA, EU, Australia, and OECD buyer attitudes. A seven-part playbook covering risk, workforce, delivery, governance, and global benchmarks.</div>
+        <span class="tk-tag available">Available</span>
+      </div>
+
+      <a class="toolkit-card" href="https://decks.therpna.co.uk/ai-accountability/">
+        <span class="tk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/></svg></span>
+        <div class="tk-title">AI Accountability, 16-Slide Deck</div>
+        <div class="tk-desc">An executive presentation for supplier leadership briefings. Covers the Horizon principle, the regulatory stack, the five pillars, and the eight complacency traps.</div>
+        <span class="tk-tag available">Available</span>
+      </a>
+
+      <div class="toolkit-card">
+        <span class="tk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="11" width="3" height="9"/><rect x="11" y="6" width="3" height="14"/><rect x="16" y="14" width="3" height="6"/></svg></span>
+        <div class="tk-title">Self-Assessment Scorecard</div>
+        <div class="tk-desc">28 scored criteria across 5 domains. Automated RAG rating and weighted scoring. Summary dashboard. Built for pre-bid supplier readiness review and gap analysis.</div>
+        <span class="tk-tag">On Request</span>
+      </div>
+
+      <div class="toolkit-card">
+        <span class="tk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-0.7 0.4-1 0.9-1 1.7"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg></span>
+        <div class="tk-title">Question Bank, 85 Evaluator Questions</div>
+        <div class="tk-desc">ITT questions, deep due diligence probes, and Horizon, SyRI, and DWP governance failure scenarios. Six categories. Mapped to regulatory instruments and scoring domains.</div>
+        <span class="tk-tag">On Request</span>
+      </div>
+
+      <div class="toolkit-card">
+        <span class="tk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7 L3 19 a2 2 0 0 0 2 2 L19 21 a2 2 0 0 0 2 -2 L21 9 a2 2 0 0 0 -2 -2 L12 7 L10 4 L5 4 a2 2 0 0 0 -2 2 Z"/></svg></span>
+        <div class="tk-title">Evidence Tracker</div>
+        <div class="tk-desc">31 named artefacts mapped to scorecard references. Y, N, or in-progress status with RAG formatting. Owner and review date fields. A ready-to-use proof portfolio template.</div>
+        <span class="tk-tag">On Request</span>
+      </div>
+
+      <div class="toolkit-card">
+        <span class="tk-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="3"/><path d="M3 19c1-3 3.5-4 6-4s5 1 6 4"/><circle cx="17" cy="8" r="2.5"/><path d="M15 19c.6-2 2-3 4-3s3 1 3 3"/></svg></span>
+        <div class="tk-title">Supplier Readiness Workshop</div>
+        <div class="tk-desc">A facilitated session using the scorecard and question bank. Designed to assess current posture, identify critical gaps, and build a 90-day remediation roadmap for active bids.</div>
+        <span class="tk-tag">On Request</span>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="doc-footer reveal" style="transition-delay:0.1s">
+      <div>
+        <div class="footer-cta-title">Lead the conversation.<br>Don't be caught unprepared.</div>
+        <p class="footer-cta-text">
+          The window to establish credibility in this space is narrow. Buyers are already scoring suppliers on AI governance. Early movers who build and demonstrate genuine capability will set the standard others are measured against.
+        </p>
+        <a class="footer-cta-link" href="mailto:richard.hanrahan@therpna.co.uk">richard.hanrahan@therpna.co.uk</a>
+      </div>
+      <div class="footer-badges">
+        <div class="footer-badge">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
+          Full Toolkit Available Now
+        </div>
+        <div class="footer-badge">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 L4 6 v6 c0 5 3.5 8 8 9 4.5-1 8-4 8-9 V6 Z"/></svg>
+          UK Public Sector Aligned
+        </div>
+        <div class="footer-badge">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></svg>
+          Procurement Act 2023 Ready
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    observer.observe(el);
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) { el.classList.add('visible'); }
+  });
+</script>
 </body>
 </html>
+                                                                                             
