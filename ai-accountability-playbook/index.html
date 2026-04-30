@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>AI in Public Sector Procurement — A Playbook for Suppliers Who Intend to Win — RPNA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg:        #0d1b2a;
+    --color-surface:   rgba(21,36,54,0.6);
+    --color-text:      #e8edf4;
+    --color-text-soft: #d8dfe9;
+    --color-text-muted:#7a8fa8;
+    --color-accent-1:  #FF8000;
+    --color-accent-2:  #FFC266;
+    --color-accent-3:  #4994A5;
+    --color-warn:      #e8574a;
+    --color-success:   #26C8B9;
+    --color-rule:      rgba(255,128,0,0.18);
+    --color-glass-border: rgba(255,255,255,0.09);
+    --font-display: 'Arvo', 'Rockwell', Georgia, serif;
+    --font-body:    'Nunito', 'Segoe UI', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-text-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  .page { max-width: 920px; margin: 0 auto; }
+
+  .bg-mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(110px); }
+  @keyframes drift {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(-40px,-50px) scale(1.1); }
+    66% { transform: translate(50px,30px) scale(0.9); }
+  }
+  .blob-1 { width:560px;height:560px;top:-120px;right:-110px;background:var(--color-accent-1);opacity:0.08;animation:drift 22s ease-in-out infinite; }
+  .blob-2 { width:420px;height:420px;bottom:-80px;left:-90px;background:var(--color-accent-3);opacity:0.10;animation:drift 26s ease-in-out infinite reverse; }
+  .blob-3 { width:300px;height:300px;top:55%;left:35%;background:var(--color-accent-2);opacity:0.05;animation:drift 18s ease-in-out infinite 4s; }
+
+  .page-logo {
+    position: fixed;
+    top: clamp(20px, 2.6vw, 32px);
+    right: clamp(20px, 2.6vw, 36px);
+    height: clamp(34px, 3.5vw, 48px);
+    width: auto;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0.95;
+  }
+  .page-confidential {
+    position: fixed;
+    bottom: clamp(14px, 2vw, 22px);
+    left: clamp(20px, 2.6vw, 32px);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    opacity: 0.75;
+    z-index: 10;
+    pointer-events: none;
+    font-weight: 500;
+  }
+
+  .content-wrap { position: relative; z-index: 2; padding: 88px 64px 96px; }
+
+  /* META & HERO */
+  .doc-meta {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-accent-1); margin-bottom: 28px; font-weight: 600;
+  }
+  .doc-meta::before { content: ''; display: block; width: 32px; height: 1px; background: var(--color-accent-1); }
+  .doc-meta .meta-soft { color: var(--color-text-muted); font-weight: 400; letter-spacing: 0.14em; }
+
+  .hero { margin-bottom: 56px; }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 700; line-height: 1.18; color: var(--color-text);
+    letter-spacing: -0.01em; margin-bottom: 22px; max-width: 800px;
+  }
+  .hero h1 em { font-style: italic; color: var(--color-accent-2); font-weight: 700; }
+  .hero-lead {
+    font-size: 1.08rem; font-weight: 300; line-height: 1.75;
+    color: var(--color-text-soft); max-width: 720px;
+  }
+
+  /* TABLE OF CONTENTS */
+  .toc {
+    margin-bottom: 56px;
+    padding: 22px 26px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-glass-border);
+    border-radius: 8px;
+  }
+  .toc-head {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 12px;
+  }
+  .toc ol { list-style: none; counter-reset: toc; columns: 2; column-gap: 36px; }
+  .toc li {
+    counter-increment: toc;
+    font-size: 0.88rem; padding: 5px 0;
+    break-inside: avoid;
+  }
+  .toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    color: var(--color-accent-1);
+    font-weight: 700;
+    margin-right: 10px;
+    font-family: var(--font-display);
+  }
+  .toc a { color: var(--color-text-soft); text-decoration: none; transition: color 0.2s; }
+  .toc a:hover { color: var(--color-accent-2); }
+
+  /* SECTIONS */
+  section.part { padding-top: 36px; margin-bottom: 36px; }
+  section.part > .part-eyebrow {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  section.part > .part-eyebrow::before { content: ''; display: block; width: 36px; height: 1px; background: var(--color-accent-1); }
+  section.part > h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700; color: var(--color-text); line-height: 1.2;
+    margin-bottom: 20px; letter-spacing: -0.005em;
+  }
+  section.part > h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem; font-weight: 700;
+    color: var(--color-text); line-height: 1.3;
+    margin-top: 36px; margin-bottom: 14px;
+  }
+
+  p { margin-bottom: 18px; color: var(--color-text-soft); font-weight: 300; }
+  p strong, li strong, .pull strong { color: var(--color-text); font-weight: 700; }
+
+  /* INLINE REFERENCE LINKS */
+  sup.ref { font-size: 0.7rem; vertical-align: super; line-height: 0; padding-left: 1px; }
+  sup.ref a { color: var(--color-accent-2); text-decoration: none; font-weight: 700; }
+  sup.ref a:hover { color: var(--color-accent-1); text-decoration: underline; }
+
+  /* LISTS */
+  ul.bullets {
+    list-style: none;
+    margin: 0 0 24px 0;
+    padding: 0;
+  }
+  ul.bullets li {
+    padding: 6px 0 6px 28px;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--color-text-soft);
+    font-weight: 300;
+  }
+  ul.bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    color: var(--color-accent-1);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  /* PULL QUOTE / CALLOUT BOX */
+  .pull {
+    margin: 28px 0;
+    padding: 22px 26px;
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-accent-1);
+    border-radius: 0 8px 8px 0;
+  }
+  .pull p { margin: 0; font-size: 0.95rem; color: var(--color-text-soft); line-height: 1.7; font-weight: 400; }
+  .pull-title {
+    display: block;
+    font-family: var(--font-display);
+    color: var(--color-accent-2);
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .pull.warn { border-left-color: var(--color-warn); background: rgba(232,87,74,0.06); }
+  .pull.warn .pull-title { color: var(--color-warn); }
+  .pull.info { border-left-color: var(--color-accent-3); background: rgba(73,148,165,0.07); }
+  .pull.info .pull-title { color: var(--color-accent-3); }
+
+  /* TABLE */
+  .tbl-wrap {
+    margin: 28px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    border: 1px solid var(--color-glass-border);
+  }
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 720px;
+    background: var(--color-surface);
+  }
+  table.data thead th {
+    text-align: left;
+    padding: 14px 16px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--color-accent-2);
+    border-bottom: 2px solid var(--color-rule);
+    background: rgba(255,128,0,0.12);
+  }
+  table.data tbody td {
+    padding: 12px 16px;
+    vertical-align: top;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--color-text-soft);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+  table.data tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  table.data tbody td:first-child { color: var(--color-accent-1); font-weight: 600; }
+
+  /* DIVIDER */
+  hr.rule { border: none; border-top: 1px solid var(--color-rule); margin: 48px 0; }
+
+  /* CASE CARDS for governance failures (Part 4) */
+  .case-block { padding: 4px 0; }
+  .case-classification {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .case-classification.not-ai { background: rgba(232,87,74,0.18); color: var(--color-warn); border: 1px solid rgba(232,87,74,0.3); }
+  .case-classification.ai-court { background: rgba(73,148,165,0.18); color: var(--color-accent-3); border: 1px solid rgba(73,148,165,0.3); }
+  .case-classification.ai-active { background: rgba(255,128,0,0.18); color: var(--color-accent-1); border: 1px solid rgba(255,128,0,0.3); }
+
+  /* EIGHT TRAPS */
+  .trap-list { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 28px 0; }
+  .trap {
+    padding: 16px 20px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-glass-border);
+    border-left: 3px solid var(--color-warn);
+    border-radius: 0 6px 6px 0;
+  }
+  .trap-num {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-warn);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .trap-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 6px;
+  }
+  .trap p { margin: 0; font-size: 0.92rem; line-height: 1.6; }
+
+  /* FIVE PILLARS */
+  .pillar-block {
+    margin: 28px 0;
+    padding: 24px 26px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-glass-border);
+    border-top: 3px solid var(--color-accent-1);
+    border-radius: 0 0 8px 8px;
+  }
+  .pillar-num-label {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent-1);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .pillar-block h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 14px;
+  }
+
+  /* REFERENCES */
+  ol.references {
+    list-style: none;
+    counter-reset: ref;
+    margin-top: 24px;
+    padding: 0;
+  }
+  ol.references li {
+    counter-increment: ref;
+    padding: 10px 0 10px 44px;
+    position: relative;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-weight: 300;
+  }
+  ol.references li::before {
+    content: '[' counter(ref) ']';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    font-family: var(--font-display);
+    color: var(--color-accent-1);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  ol.references li a {
+    color: var(--color-accent-2);
+    text-decoration: none;
+    word-break: break-word;
+  }
+  ol.references li a:hover { color: var(--color-accent-1); text-decoration: underline; }
+
+  /* FOOTER CTA */
+  footer.doc-footer {
+    margin-top: 56px;
+    padding-top: 36px;
+    border-top: 1px solid var(--color-rule);
+  }
+  .footer-cta-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 10px;
+    line-height: 1.25;
+  }
+  .footer-cta-text {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin-bottom: 18px;
+    max-width: 580px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(255,128,0,0.08);
+    border: 1px solid rgba(255,128,0,0.3);
+    border-radius: 999px;
+    color: var(--color-accent-2);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.25s, border-color 0.25s, transform 0.2s;
+  }
+  .footer-link:hover {
+    background: rgba(255,128,0,0.16);
+    border-color: rgba(255,128,0,0.55);
+    transform: translateY(-2px);
+  }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* MOBILE */
+  @media (max-width: 1024px) { .content-wrap { padding: 80px 40px 88px; } }
+  @media (max-width: 768px) {
+    .content-wrap { padding: 70px 22px 80px; }
+    body { font-size: 15px; line-height: 1.65; }
+    .toc ol { columns: 1; }
+    .page-logo { top: 14px; right: 14px; height: 28px; }
+    .page-confidential { bottom: 12px; left: 14px; font-size: 0.62rem; }
+    .hero h1 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+    section.part > h2 { font-size: 1.45rem; }
+  }
+  @media (max-width: 480px) {
+    .content-wrap { padding: 64px 16px 72px; }
+    .page-logo { height: 24px; }
+    .pull, .pillar-block, .toc { padding: 18px 20px; }
+  }
+
+  @media print {
+    body { background: #fff !important; color: #111 !important; }
+    .bg-mesh, .page-logo, .page-confidential, .toc { display: none !important; }
+    .content-wrap { padding: 24px 32px !important; }
+    section.part, .pull, .pillar-block, .trap, table.data, .case-classification, .footer-link {
+      background: #fff !important; color: #111 !important; border-color: #ccc !important;
+    }
+    .pull { background: #f7f7f4 !important; }
+    h1, h2, h3, .footer-cta-title, .pillar-block h3, .trap-title, .case-name { color: #111 !important; }
+    .doc-meta, .part-eyebrow, .toc-head, .pull-title, .case-classification, .pillar-num-label, .trap-num, sup.ref a { color: #A95300 !important; }
+    p, ul.bullets li, table.data td { color: #333 !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-mesh" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<img class="page-logo" src="assets/logo-orange-transparent.png" alt="RPNA">
+<div class="page-confidential">Company Confidential · RPNA Ltd.</div>
+
+<div class="page">
+  <div class="content-wrap">
+
+    <!-- META -->
+    <div class="doc-meta reveal">Playbook <span class="meta-soft">· Procurement &amp; AI Governance Series · April 2026 · Version 1.0</span></div>
+
+    <!-- HERO -->
+    <section class="hero reveal" style="transition-delay:0.06s">
+      <h1>AI in Public Sector Procurement.<br><em>A Playbook for Suppliers Who Intend to Win.</em></h1>
+      <p class="hero-lead">Demonstrating risk mitigation, workforce integrity, and service delivery excellence. A practitioner playbook for suppliers tendering into UK central government, the NHS, and local authorities, drawing on the Procurement Act 2023, PPN 017, PPN 002, the ATRS, the NHS DTAC, the EU AI Act (Regulation 2024/1689), and international standards from Australia, Canada, and the OECD.</p>
+    </section>
+
+    <!-- TOC -->
+    <nav class="toc reveal" style="transition-delay:0.1s" aria-label="Contents">
+      <div class="toc-head">Contents</div>
+      <ol>
+        <li><a href="#exec-summary">Executive Summary</a></li>
+        <li><a href="#part-1">The new procurement reality</a></li>
+        <li><a href="#part-2">Risk mitigation, the five credible dimensions</a></li>
+        <li><a href="#part-3">People and workforce integrity</a></li>
+        <li><a href="#part-4">Governance failures buyers are trained to recognise</a></li>
+        <li><a href="#part-5">Delivery of services, the five standards</a></li>
+        <li><a href="#part-6">Global best practice, the converging standard</a></li>
+        <li><a href="#part-7">The eight complacency traps</a></li>
+        <li><a href="#part-8">The supplier excellence standard, five pillars</a></li>
+        <li><a href="#conclusions">Conclusions</a></li>
+        <li><a href="#references">References</a></li>
+      </ol>
+    </nav>
+
+    <!-- EXECUTIVE SUMMARY -->
+    <section class="part reveal" id="exec-summary">
+      <div class="part-eyebrow">Executive Summary</div>
+      <h2>What this playbook covers, and why it matters now.</h2>
+
+      <p>The public sector's relationship with artificial intelligence is no longer nascent. In 2025 alone, the UK public sector awarded AI-related contracts worth £1.17 billion, a 54% increase in volume on the prior year, bringing the cumulative value of public AI contracts since 2018 to £3.8 billion<sup class="ref"><a href="#ref-25">[25]</a></sup>. Against this backdrop, procurement and compliance teams are now systematically probing how suppliers use AI across three domains. Risk management. People and workforce integrity. Service delivery.</p>
+
+      <p>This playbook sets out, with reference to published government policy, regulatory instruments, and documented governance failures, the standard suppliers must meet and exceed if they are to remain competitive in public sector markets. It draws on the UK's Procurement Act 2023<sup class="ref"><a href="#ref-1">[1]</a></sup>, Procurement Policy Notes (PPN 017<sup class="ref"><a href="#ref-3">[3]</a></sup>, PPN 002<sup class="ref"><a href="#ref-4">[4]</a></sup>), the NHS Digital Technology Assessment Criteria (DTAC)<sup class="ref"><a href="#ref-6">[6]</a></sup>, the Algorithmic Transparency Recording Standard (ATRS)<sup class="ref"><a href="#ref-5">[5]</a></sup>, the EU AI Act (Regulation 2024/1689)<sup class="ref"><a href="#ref-12">[12]</a></sup>, and international standards from Australia, Canada, and the OECD<sup class="ref"><a href="#ref-20">[20]</a></sup><sup class="ref"><a href="#ref-21">[21]</a></sup><sup class="ref"><a href="#ref-22">[22]</a></sup>.</p>
+
+      <div class="pull">
+        <p><span class="pull-title">The central argument.</span> Complacency is now a disqualifying risk. Buyers are trained, their questions are structured, and the regulatory environment has teeth. Suppliers who treat AI governance as a compliance checkbox will lose marks, lose contracts, and in the worst cases become the next institutional cautionary tale.</p>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 1 -->
+    <section class="part" id="part-1">
+      <div class="part-eyebrow">Part One</div>
+      <h2>The new procurement reality.</h2>
+
+      <h3>1.1 The regulatory stack</h3>
+      <p>Suppliers tendering for public contracts in 2026 operate within a layered regulatory environment that has been fundamentally reshaped since 2023. The Procurement Act 2023, which came into force on 24 February 2025, introduces the most significant reform of UK public procurement law in a generation<sup class="ref"><a href="#ref-1">[1]</a></sup>. It establishes transparency obligations, enhanced due diligence requirements, and a new competitive flexible procedure that allows contracting authorities to design bespoke evaluation processes, including those that probe AI capability and risk<sup class="ref"><a href="#ref-2">[2]</a></sup>.</p>
+
+      <p>Sitting beneath the Act, Procurement Policy Note 017 (PPN 017), published February 2025, addresses AI use in procurement<sup class="ref"><a href="#ref-3">[3]</a></sup>. It requires contracting authorities to ask suppliers to disclose whether AI tools were used to create their tender responses. Where AI has been used, buyers may conduct site visits, clarification sessions, and presentations to test whether suppliers have genuine capacity and capability, not AI-generated plausibility.</p>
+
+      <p>PPN 002, the updated Social Value Model (mandatory from 1 October 2025), mandates a minimum 10% weighting for social value in central government contract evaluations<sup class="ref"><a href="#ref-4">[4]</a></sup>. This weighting encompasses workforce commitments, local employment, skills and apprenticeships. All of which are directly affected by AI-driven workforce decisions. Suppliers whose AI usage displaces rather than develops people will face measurable scoring penalties.</p>
+
+      <h3>1.2 The key instruments at a glance</h3>
+      <div class="tbl-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Instrument</th>
+              <th>Issuer</th>
+              <th>In Force</th>
+              <th>Primary AI Obligation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Procurement Act 2023</td><td>UK Parliament</td><td>Feb 2025</td><td>Transparency, due diligence, flexible evaluation</td></tr>
+            <tr><td>PPN 017</td><td>Cabinet Office</td><td>Feb 2025</td><td>Mandatory AI disclosure in tender responses</td></tr>
+            <tr><td>PPN 002 Social Value Model</td><td>Cabinet Office</td><td>Oct 2025</td><td>Minimum 10% social value weighting, workforce commitments</td></tr>
+            <tr><td>ATRS</td><td>CDDO / Cabinet Office</td><td>Operational</td><td>Algorithmic transparency standard for public bodies</td></tr>
+            <tr><td>NHS DTAC</td><td>NHS England</td><td>Current</td><td>Clinical safety, data protection, technical assurance for digital health tech</td></tr>
+            <tr><td>EU AI Act (Reg. 2024/1689)</td><td>European Parliament</td><td>Aug 2026 (high-risk)</td><td>High-risk classification for AI in recruitment and employment, mandatory human oversight</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>1.3 The Algorithmic Transparency Recording Standard (ATRS)</h3>
+      <p>The ATRS requires public sector organisations to proactively publish clear information about the algorithmic tools they deploy and why<sup class="ref"><a href="#ref-5">[5]</a></sup>. As of early 2026, 14 new entries have been added to the public ATRS register, though analysts note this represents only a fraction of known public sector AI deployments<sup class="ref"><a href="#ref-7">[7]</a></sup>. The standard creates a reciprocal expectation. If buyers must be transparent about algorithms, so must their suppliers. Evaluators increasingly use the ATRS as a lens through which to assess whether a supplier's own AI transparency meets the same standard.</p>
+
+      <h3>1.4 The NHS DTAC</h3>
+      <p>For suppliers operating in health and social care, the NHS Digital Technology Assessment Criteria (DTAC) is the gateway standard<sup class="ref"><a href="#ref-6">[6]</a></sup>. It assesses digital technologies across five domains. Clinical safety. Data protection. Technical assurance. Interoperability. Usability and accessibility. Digital health technologies, including AI-assisted tools, must meet DTAC minimum standards before NHS organisations will complete a procurement, regardless of the procurement route used<sup class="ref"><a href="#ref-8">[8]</a></sup>.</p>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 2 -->
+    <section class="part" id="part-2">
+      <div class="part-eyebrow">Part Two</div>
+      <h2>Risk mitigation. The five credible dimensions.</h2>
+
+      <p>Public sector buyers have moved well beyond asking whether a supplier "uses AI". Their due diligence now maps onto five distinct risk dimensions. Suppliers must address each with documented evidence, not narrative assurances.</p>
+
+      <h3>2.1 Transparency and explainability</h3>
+      <p>Buyers require suppliers to explain, in plain language, what AI systems are deployed, what decisions they influence, and what the decision logic is. This is not merely good practice. PPN 017 anticipates that buyers will conduct clarification sessions and site visits where AI is involved in service delivery, mirroring the ATRS requirement for public bodies themselves. A supplier who cannot produce an Algorithmic Impact Assessment or equivalent on request fails this dimension immediately.</p>
+
+      <ul class="bullets">
+        <li>Maintain an Algorithmic Use Register, a live inventory of all AI tools deployed in delivery.</li>
+        <li>Produce plain-language explainability statements for each system that influences material outcomes.</li>
+        <li>Participate willingly in buyer-initiated due diligence, including site visits and technical presentations.</li>
+      </ul>
+
+      <h3>2.2 Bias testing and assurance</h3>
+      <p>The DWP Universal Credit AI case, in which an internal fairness analysis disclosed in December 2024 under the Freedom of Information Act found "statistically significant referral and outcome disparity" across age, disability, marital status, and nationality<sup class="ref"><a href="#ref-9">[9]</a></sup>, illustrates what unvalidated AI deployment looks like at scale. The Public Law Project criticised the DWP's "hurt first, fix later" approach<sup class="ref"><a href="#ref-10">[10]</a></sup>. Suppliers to the public sector cannot adopt the same posture. Bias testing is a minimum, not an aspiration.</p>
+
+      <ul class="bullets">
+        <li>Conduct pre-deployment bias assessments across all protected characteristics.</li>
+        <li>Establish ongoing quarterly bias monitoring with documented outcomes.</li>
+        <li>Make bias assessment methodology available to buyers on request.</li>
+      </ul>
+
+      <h3>2.3 Data sovereignty and security</h3>
+      <p>PPN 017 prohibits suppliers from using confidential government tender documents or information not in the public domain as training data for AI or large language models (LLMs). This creates a positive obligation on suppliers to have documented data governance policies that govern what enters any AI system during and after contract delivery. Breaches of this principle could, in theory, constitute a disqualifying failure under the Procurement Act 2023.</p>
+
+      <ul class="bullets">
+        <li>Publish a clear AI Data Governance Policy covering training data sources and exclusions.</li>
+        <li>Implement contractual controls on data use across any AI supply chain.</li>
+        <li>Comply with UK GDPR and the Data Protection Act 2018 for all AI-processed personal data.</li>
+      </ul>
+
+      <h3>2.4 Exit planning and vendor lock-in</h3>
+      <p>Public sector contracts have defined lifespans. AI systems embedded in service delivery create dependency risks that persist beyond contract end. Buyers increasingly require evidence that AI-driven services can be handed over, migrated, or decommissioned without catastrophic service disruption. This includes data portability, model documentation, and transition support provisions.</p>
+
+      <ul class="bullets">
+        <li>Include an AI Exit Plan in all proposal documentation for contracts of material duration.</li>
+        <li>Maintain documented model cards for all AI systems used in delivery.</li>
+        <li>Make sure data portability provisions are addressed in contract terms.</li>
+      </ul>
+
+      <h3>2.5 Continuous monitoring and incident response</h3>
+      <p>A system that performs within tolerance at go-live may degrade over time as data distributions shift. Buyers, increasingly guided by the ATRS, expect ongoing monitoring commitments, not a one-time validation. Suppliers must demonstrate active performance monitoring with escalation protocols and public-facing transparency where appropriate.</p>
+
+      <ul class="bullets">
+        <li>Implement real-time or scheduled performance monitoring dashboards for AI systems in delivery.</li>
+        <li>Define incident thresholds, the point at which a buyer is notified, and the response protocol.</li>
+        <li>Commit to periodic third-party audits of AI systems on long-duration contracts.</li>
+      </ul>
+
+      <h3>2.6 The AI Risk Register, a minimum artefact</h3>
+      <div class="pull">
+        <p><span class="pull-title">Buyer expectation.</span> Evaluators now expect suppliers to produce an AI Risk Register on request. This document should identify all AI tools used in service delivery, risk classification (low, medium, high), mitigation in place, owner, review date, bias assessment status, and data governance control. Absence of this document is increasingly treated as an indicator of immature AI governance.</p>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 3 -->
+    <section class="part" id="part-3">
+      <div class="part-eyebrow">Part Three</div>
+      <h2>People and workforce integrity.</h2>
+
+      <p>Workforce integrity is the highest-risk blind spot for suppliers in this space. It sits at the intersection of social value scoring (PPN 002), the EU AI Act's high-risk employment provisions, and the broader macro-displacement risk created by AI adoption. Buyers are not only asking what suppliers do with AI, they are asking what AI does to people.</p>
+
+      <h3>3.1 Social value scoring, the workforce dimension</h3>
+      <p>Under PPN 002's Social Value Model (mandatory from 1 October 2025), in-scope contracting authorities must apply a minimum 10% evaluation weighting to social value<sup class="ref"><a href="#ref-4">[4]</a></sup>. The workforce outcomes within this model require suppliers to make specific, measurable, time-bound commitments on local employment, apprenticeships, supply chain diversity, and workforce development<sup class="ref"><a href="#ref-11">[11]</a></sup>. Suppliers whose AI deployment decisions reduce headcount, outsource roles, or displace workers without a clear reskilling plan will find it materially harder to score well on these criteria.</p>
+
+      <ul class="bullets">
+        <li>Map every workforce-affecting AI deployment against PPN 002 social value themes before submission.</li>
+        <li>Provide a Workforce Impact Statement for any AI system that changes roles, tasks, or headcount.</li>
+        <li>Commit to funded reskilling pathways where AI displaces existing role functions.</li>
+      </ul>
+
+      <h3>3.2 AI in recruitment and interim staffing, the high-risk classification</h3>
+      <p>The EU AI Act (Regulation 2024/1689), Annex III, classifies AI systems used in recruitment or selection as high-risk<sup class="ref"><a href="#ref-12">[12]</a></sup>. This includes systems that place targeted job advertisements, filter applications, evaluate candidates, or monitor worker performance. Compliance obligations for high-risk systems include transparency to affected individuals, human oversight requirements, bias testing, and registration, with enforcement deadlines from August 2026<sup class="ref"><a href="#ref-13">[13]</a></sup>. Fines for non-compliance can reach €35 million or 7% of global annual turnover<sup class="ref"><a href="#ref-14">[14]</a></sup>.</p>
+
+      <p>For suppliers providing interim and temporary staffing services to the public sector, this creates clear obligations. Any AI tool used to source, score, or select candidates for public sector placements is a high-risk system under the Act. "AI laundering", the use of AI to make decisions that are subsequently presented as human judgements, is addressed and prohibited under the transparency and explainability provisions.</p>
+
+      <ul class="bullets">
+        <li>Audit all recruitment technology for high-risk AI classification ahead of the August 2026 enforcement deadline.</li>
+        <li>Implement mandatory human oversight at every AI-assisted selection decision point.</li>
+        <li>Disclose AI use in candidate selection processes to buyers and, where required, to candidates.</li>
+        <li>Make sure interim staffing supply chain partners meet the same AI governance standards.</li>
+      </ul>
+
+      <h3>3.3 Macro displacement and organisational duty</h3>
+      <p>The World Economic Forum's Future of Jobs Report (2025) estimates that 70% of tasks currently performed by the global workforce will be affected by AI within five years. For public sector suppliers, whose contracts often include social value and community impact obligations, passive displacement is not an acceptable position. Buyers are beginning to ask explicit questions about workforce planning in the context of AI adoption, both within the supplier's own organisation and within the services being delivered.</p>
+
+      <ul class="bullets">
+        <li>Publish an AI and Workforce Policy that addresses displacement risk and mitigation.</li>
+        <li>Include workforce transition planning in all AI implementation proposals.</li>
+        <li>Report annually on the workforce impact of AI deployment across public sector contracts.</li>
+      </ul>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 4 -->
+    <section class="part" id="part-4">
+      <div class="part-eyebrow">Part Four</div>
+      <h2>Governance failures buyers are trained to recognise.</h2>
+
+      <p>Experienced procurement professionals, and the compliance functions that now support them, are trained on a canon of governance failures. These cases are not historical footnotes. They are the reference points from which evaluation outlines are built. Suppliers must understand them in depth.</p>
+
+      <h3>4.1 Case 1. Post Office Horizon, the governance failure archetype</h3>
+      <div class="case-block">
+        <span class="case-classification not-ai">Classification, NOT an AI system</span>
+        <p>Fujitsu Horizon was a conventional IT accounting system. Its lessons apply directly to AI governance by analogy and precedent.</p>
+
+        <p>The Post Office Horizon scandal, described as the most widespread miscarriage of justice in UK history, resulted in over 700 wrongful prosecutions of sub-postmasters between 2000 and 2014<sup class="ref"><a href="#ref-15">[15]</a></sup>. The Fujitsu Horizon IT system contained defects that caused phantom financial shortfalls. Post Office Limited (POL) attributed those shortfalls to human error and prosecuted accordingly. The system was trusted absolutely. Its outputs were never questioned. The institution's culture, "the system never lies", created the conditions for catastrophic harm.</p>
+
+        <p>The IoD analysis identifies four compounding governance failures<sup class="ref"><a href="#ref-15">[15]</a></sup>. Uncritical trust in technology outputs. Confirmation bias in decision-making. A legal presumption, now under review, that computers do not make mistakes. A board culture that doubled down rather than interrogated anomalies. Academic analysis by Baber, King, Salmon and Jiang (2024) uses accimapping to demonstrate how the system's "black box" nature denied transparency to all stakeholders<sup class="ref"><a href="#ref-16">[16]</a></sup>.</p>
+
+        <div class="pull warn">
+          <p><span class="pull-title">The Horizon principle for suppliers.</span> Any AI system that generates outputs used to make decisions affecting citizens, staff, or contract delivery must be interrogatable. Suppliers must demonstrate, not merely assert, how the system reached its outputs. Blind institutional trust in technology is the single most dangerous governance posture in public sector AI deployment.</p>
+        </div>
+      </div>
+
+      <h3>4.2 Case 2. Dutch SyRI, the first court-halted AI system</h3>
+      <div class="case-block">
+        <span class="case-classification ai-court">AI system, court-halted</span>
+        <p>The Dutch System Risk Indication (SyRI) was an AI-based fraud detection algorithm used by the Dutch government to identify welfare fraud. In February 2020, The Hague District Court ruled that SyRI violated Article 8 of the European Convention on Human Rights (right to private life), making it the first judicial decision ever to halt the operation of a government AI system on human rights grounds<sup class="ref"><a href="#ref-17">[17]</a></sup>. The court found that the system operated without sufficient transparency, that affected individuals had no meaningful ability to understand or challenge its logic, and that it disproportionately targeted low-income communities.</p>
+
+        <div class="pull info">
+          <p><span class="pull-title">Lesson for suppliers.</span> Hidden algorithmic harm will be litigated. The absence of explainability is not merely a compliance gap, it is a justiciable human rights violation. Any supplier deploying AI that influences decisions about individuals must provide meaningful transparency and challenge mechanisms.</p>
+        </div>
+      </div>
+
+      <h3>4.3 Case 3. DWP Universal Credit AI, the active bias warning</h3>
+      <div class="case-block">
+        <span class="case-classification ai-active">AI system, active in 2024</span>
+        <p>The DWP's machine-learning system, used to risk-score Universal Credit Advances claims, was the subject of an internal fairness assessment in February 2024. Documents released under the Freedom of Information Act and reported by The Guardian in December 2024 revealed "statistically significant referral and outcome disparity" for age, disability, marital status, and nationality<sup class="ref"><a href="#ref-18">[18]</a></sup>. The DWP stated there were "no immediate concerns of unfair treatment" because final decisions involve a human, but acknowledged that protected characteristics including race, sex, sexual orientation, religion, and gender reassignment had not been assessed for bias<sup class="ref"><a href="#ref-9">[9]</a></sup>.</p>
+
+        <p>Civil society organisations characterised this as a "hurt first, fix later" approach, a framing that has entered the procurement lexicon<sup class="ref"><a href="#ref-10">[10]</a></sup>. Buyers now ask suppliers explicitly whether they have conducted pre-deployment bias assessments and whether they proactively disclose findings, rather than waiting for FOI disclosure.</p>
+
+        <div class="pull warn">
+          <p><span class="pull-title">The active bias standard.</span> Passive monitoring, testing for bias only after concerns are raised, is now an unacceptable standard for public sector AI. Suppliers must demonstrate proactive bias assessment across all protected characteristics, before deployment and on a regular ongoing basis.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 5 -->
+    <section class="part" id="part-5">
+      <div class="part-eyebrow">Part Five</div>
+      <h2>Delivery of services. The five standards.</h2>
+
+      <p>The quality of AI-assisted service delivery is the most direct manifestation of supplier competence. Buyers are moving from evaluating AI capability at bid stage to measuring AI performance throughout the contract lifecycle. The following five standards define the delivery dimension of this playbook.</p>
+
+      <h3>5.1 Transparent AI use throughout delivery</h3>
+      <p>Suppliers must disclose AI use not just at the point of tendering, but throughout delivery. PPN 017 establishes the principle of ongoing AI transparency, and contracting authorities are increasingly including AI disclosure obligations as active contract management requirements. Any change in AI tool, model version, or deployment scope during delivery should trigger a notification to the contracting authority.</p>
+
+      <ul class="bullets">
+        <li>Include AI disclosure obligations as standing agenda items in contract review meetings.</li>
+        <li>Notify the buyer within an agreed timeframe of any material change to AI systems in delivery.</li>
+      </ul>
+
+      <h3>5.2 Human oversight at consequential decision points</h3>
+      <p>The EU AI Act's requirement for human oversight of high-risk AI systems reflects a global consensus that consequential decisions, decisions that affect individuals' rights, access to services, employment, or welfare, cannot be fully automated. The DWP case illustrates what happens when this principle is applied defensively ("a human makes the final decision") rather than substantively (human oversight is genuinely meaningful and documented). Suppliers must evidence genuine human oversight, not token sign-off processes.</p>
+
+      <ul class="bullets">
+        <li>Define, document, and apply human oversight at every AI-assisted decision point affecting individuals.</li>
+        <li>Train staff on meaningful oversight, not rubber-stamping, of AI outputs.</li>
+      </ul>
+
+      <h3>5.3 Performance monitoring and model drift</h3>
+      <p>AI systems can degrade over time as real-world data distributions diverge from training data. This "model drift" is a documented risk in production AI systems. Contracting authorities are beginning to specify monitoring obligations in contract requirements. Suppliers must have active drift detection protocols and demonstrate performance stability.</p>
+
+      <ul class="bullets">
+        <li>Implement scheduled model performance reviews, at minimum quarterly.</li>
+        <li>Define performance floor thresholds below which human review is automatically triggered.</li>
+      </ul>
+
+      <h3>5.4 Supply chain AI governance</h3>
+      <p>Large contractors increasingly deliver through supply chains that themselves use AI. The principal supplier's AI governance obligations do not end at their own boundary. PPN 017 requires proportionate due diligence, and where sub-contractors use AI in material elements of delivery, buyers will expect evidence that the supplier has applied comparable governance standards down the supply chain.</p>
+
+      <ul class="bullets">
+        <li>Include AI governance requirements in all sub-contractor agreements.</li>
+        <li>Conduct periodic supply chain AI audits and report findings to the contracting authority.</li>
+      </ul>
+
+      <h3>5.5 Agility in a fast-moving regulatory landscape</h3>
+      <p>The regulatory environment is moving faster than most procurement cycles. The EU AI Act's high-risk system provisions come into force in August 2026, the ATRS continues to expand, and PPN 002's social value model becomes mandatory in October 2025. Suppliers who lock their AI governance into a static document risk falling out of compliance within the contract period. The playbook standard requires a living governance commitment, regular review, board-level ownership, and a clear regulatory horizon-scanning function.</p>
+
+      <ul class="bullets">
+        <li>Assign board-level accountability for AI governance and regulatory compliance.</li>
+        <li>Conduct biannual regulatory horizon-scanning reviews and update governance approaches accordingly.</li>
+        <li>Communicate regulatory changes proactively to contracting authorities where they affect delivery.</li>
+      </ul>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 6 -->
+    <section class="part" id="part-6">
+      <div class="part-eyebrow">Part Six</div>
+      <h2>Global best practice. The converging standard.</h2>
+
+      <p>The principles embedded in UK policy are not unique. A global convergence is underway, with leading jurisdictions developing comparable approaches. Suppliers operating internationally, or seeking to position themselves as world-class, should understand this convergence and adopt it as a baseline, not a ceiling.</p>
+
+      <div class="tbl-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th>Jurisdiction</th>
+              <th>Key Instrument</th>
+              <th>Core AI Obligation for Suppliers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>UK Central Government</td><td>Procurement Act 2023, PPN 017, PPN 002, ATRS</td><td>AI disclosure at tender, ongoing transparency, social value workforce weighting, algorithmic transparency standard</td></tr>
+            <tr><td>NHS England</td><td>DTAC, NHS Net Zero Supplier Roadmap</td><td>Clinical safety, data protection, technical assurance, interoperability, usability assessments before procurement</td></tr>
+            <tr><td>Local Government (England)</td><td>LGA, LOTI, ICO, EHRC "Responsibly Buying AI" Guide (April 2025)</td><td>PSED compliance, data protection, equality impact assessment for AI procurement, role-specific question structures</td></tr>
+            <tr><td>European Union</td><td>EU AI Act (Reg. 2024/1689)</td><td>High-risk classification for AI in recruitment and employment, mandatory human oversight, bias testing, transparency, registration by Aug 2026</td></tr>
+            <tr><td>Australia</td><td>National Framework for Assurance of AI in Government (June 2024), DTA AI Procurement Guidance (Dec 2025)</td><td>AI ethics principles in procurement documentation, vendor capability for review and monitoring, AI model clauses in contracts</td></tr>
+            <tr><td>Canada</td><td>Directive on Automated Decision-Making (updated 2023, compliance deadline June 2026)</td><td>Impact assessment, transparency, quality assurance, recourse mechanisms, public reporting for automated decision systems</td></tr>
+            <tr><td>OECD / G7</td><td>G7 Toolkit for AI in the Public Sector (OECD/UNESCO 2024)</td><td>Ethical, trustworthy, human-centric AI procurement, fostering public good AI ecosystems, transparency and accountability as baseline</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.1 The global convergence principle</h3>
+      <p>Across all seven jurisdictions, the same four principles appear. Transparency (explain what the system does and why). Accountability (identify who is responsible for outcomes). Fairness (test for and mitigate bias). Human oversight (retain meaningful human control at consequential decision points). These are not optional features. They are the baseline expectation of every sophisticated public sector buyer in the world.</p>
+
+      <p>The Australian AI model contract clauses (DTA, 2025) go further, requiring sellers to make sure that AI systems "do not discriminate against any person or group on the grounds of any protected characteristic" and "do not pose a reputational risk or undermine public confidence in the government"<sup class="ref"><a href="#ref-24">[24]</a></sup>. This framing is significant. It positions the supplier's AI governance as a risk-transfer obligation, not merely an internal practice.</p>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 7 -->
+    <section class="part" id="part-7">
+      <div class="part-eyebrow">Part Seven</div>
+      <h2>The eight complacency traps.</h2>
+
+      <p>The following are the failure modes where suppliers lose evaluation marks, damage buyer confidence, and in serious cases face disqualification or legal action. Each represents a pattern observed in procurement evaluations, post-award reviews, and the documented case studies in this report.</p>
+
+      <div class="trap-list">
+        <div class="trap"><div class="trap-num">Trap 1</div><div class="trap-title">Static compliance</div><p>AI governance documented once, at bid stage, and never revisited. Evaluators now ask for evidence of the last governance review date. A policy with a 2023 timestamp fails the "living commitment" test.</p></div>
+        <div class="trap"><div class="trap-num">Trap 2</div><div class="trap-title">AI laundering in tender responses</div><p>Using AI to generate tender responses and presenting them as original analytical work. PPN 017 requires disclosure. Buyers conducting due diligence, site visits, presentations, clarification questions, will expose capability gaps between the AI-written proposal and the human team behind it.</p></div>
+        <div class="trap"><div class="trap-num">Trap 3</div><div class="trap-title">ATRS obstruction</div><p>Refusing or delaying buyer requests for algorithmic transparency information, or providing opaque responses that do not meet the ATRS standard. This is increasingly a mark-losing behaviour at evaluation stage and a contract management risk post-award.</p></div>
+        <div class="trap"><div class="trap-num">Trap 4</div><div class="trap-title">Workforce rhetoric without commitment</div><p>Social value responses that reference workforce development in general terms, without specific, measurable, time-bound commitments. Under PPN 002 (mandatory from October 2025), vague commitments are scored zero. Buyers are trained to probe for specificity.</p></div>
+        <div class="trap"><div class="trap-num">Trap 5</div><div class="trap-title">AI in recruitment, undisclosed</div><p>Using AI-assisted screening, scoring, or ranking tools in the selection of staff, associates, or sub-contractors for public sector placements without disclosure. Under the EU AI Act's high-risk classification (effective August 2026), this is a compliance failure, not merely a transparency gap.</p></div>
+        <div class="trap"><div class="trap-num">Trap 6</div><div class="trap-title">Passive bias monitoring</div><p>Testing for bias only after concerns are raised, the "hurt first, fix later" posture identified in the DWP case. Evaluators now ask for evidence of proactive, pre-deployment bias assessment across all protected characteristics.</p></div>
+        <div class="trap"><div class="trap-num">Trap 7</div><div class="trap-title">Supply chain blind spots</div><p>Applying rigorous AI governance to the primary supplier's own operations while failing to extend equivalent standards to sub-contractors and supply chain partners who deliver material elements of the contracted service.</p></div>
+        <div class="trap"><div class="trap-num">Trap 8</div><div class="trap-title">Treating AI governance as IT, not governance</div><p>Delegating AI governance entirely to technical teams, without board-level ownership, commercial awareness, or integration with bid management and contract delivery. The Horizon scandal's core lesson is that governance failures are board failures. Buyers increasingly ask who, at board level, owns AI risk.</p></div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- PART 8 -->
+    <section class="part" id="part-8">
+      <div class="part-eyebrow">Part Eight</div>
+      <h2>The supplier excellence standard. Five pillars.</h2>
+
+      <p>The playbook standard is expressed in five pillars. Each pillar defines what "exceeding expectations" looks like in a live procurement evaluation and throughout contract delivery. Together they form an outline for competitive differentiation in AI-governed public sector markets.</p>
+
+      <div class="pillar-block">
+        <div class="pillar-num-label">Pillar One</div>
+        <h3>Transparent AI governance</h3>
+        <ul class="bullets">
+          <li>Maintain a current, board-approved AI Governance Policy.</li>
+          <li>Operate an Algorithmic Use Register, a live inventory of all AI systems in delivery.</li>
+          <li>Produce Algorithmic Impact Assessments for all systems that influence material decisions.</li>
+          <li>Comply with the ATRS standard and be ready to submit documentation on request.</li>
+          <li>Designate a named board-level AI Governance Lead.</li>
+        </ul>
+        <div class="pull">
+          <p><span class="pull-title">Evidence portfolio.</span> AI Governance Policy (dated within 12 months), Algorithmic Use Register, Algorithmic Impact Assessment for at least one live system.</p>
+        </div>
+      </div>
+
+      <div class="pillar-block">
+        <div class="pillar-num-label">Pillar Two</div>
+        <h3>Bias assurance and fairness</h3>
+        <ul class="bullets">
+          <li>Conduct pre-deployment bias assessments across all nine protected characteristics for every AI system used in delivery.</li>
+          <li>Implement quarterly ongoing bias monitoring with documented outcomes.</li>
+          <li>Apply EU AI Act high-risk compliance protocols to all recruitment and employment AI (ahead of the August 2026 deadline).</li>
+          <li>Publish a Bias Assurance Statement as part of standard proposal documentation.</li>
+        </ul>
+        <div class="pull">
+          <p><span class="pull-title">Evidence portfolio.</span> Bias Assessment Report (pre-deployment), monitoring schedule, EU AI Act readiness assessment.</p>
+        </div>
+      </div>
+
+      <div class="pillar-block">
+        <div class="pillar-num-label">Pillar Three</div>
+        <h3>Workforce integrity</h3>
+        <ul class="bullets">
+          <li>Publish a Workforce Impact Statement for all AI deployments affecting roles or tasks.</li>
+          <li>Provide specific, measurable, time-bound social value workforce commitments in all bids (PPN 002 compliant).</li>
+          <li>Fund reskilling pathways where AI displaces existing role functions.</li>
+          <li>Apply AI governance standards, including recruitment AI disclosure, to all supply chain partners.</li>
+          <li>Report annually on the workforce impact of AI across public sector contracts.</li>
+        </ul>
+        <div class="pull">
+          <p><span class="pull-title">Evidence portfolio.</span> Workforce Impact Statement, PPN 002 social value commitments (SMART), supply chain AI policy.</p>
+        </div>
+      </div>
+
+      <div class="pillar-block">
+        <div class="pillar-num-label">Pillar Four</div>
+        <h3>Delivery integrity</h3>
+        <ul class="bullets">
+          <li>Notify contracting authorities of any material change to AI systems in delivery.</li>
+          <li>Implement model performance monitoring with defined drift thresholds.</li>
+          <li>Conduct at least annual third-party AI audits on long-duration contracts.</li>
+          <li>Apply the Horizon principle. Treat every AI output as interrogatable, not infallible.</li>
+          <li>Maintain AI Exit Plans for all contracts of material duration.</li>
+        </ul>
+        <div class="pull">
+          <p><span class="pull-title">Evidence portfolio.</span> Change notification protocol, monitoring dashboard, AI Exit Plan, third-party audit report.</p>
+        </div>
+      </div>
+
+      <div class="pillar-block">
+        <div class="pillar-num-label">Pillar Five</div>
+        <h3>Regulatory agility</h3>
+        <ul class="bullets">
+          <li>Conduct biannual regulatory horizon-scanning reviews.</li>
+          <li>Update AI governance approaches within 60 days of material regulatory change.</li>
+          <li>Proactively communicate regulatory changes to contracting authorities where they affect delivery.</li>
+          <li>Maintain awareness of and readiness for the EU AI Act (Aug 2026), PPN 002 (Oct 2025), and ATRS expansion.</li>
+        </ul>
+        <div class="pull">
+          <p><span class="pull-title">Evidence portfolio.</span> Horizon-scanning log, regulatory update communications to buyers, gap analysis against the EU AI Act.</p>
+        </div>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- CONCLUSIONS -->
+    <section class="part" id="conclusions">
+      <div class="part-eyebrow">Conclusions</div>
+      <h2>What separates the suppliers who win.</h2>
+
+      <p>The convergence of the Procurement Act 2023, PPN 017, PPN 002, the ATRS, the NHS DTAC, and the EU AI Act has created a procurement environment in which AI governance is not optional, not supplementary, and not the sole province of technical teams. It is a core supplier capability, evaluated, scored, and contractually committed to.</p>
+
+      <p>The Post Office Horizon scandal, the Dutch SyRI case, and the DWP Universal Credit AI bias disclosure have educated a generation of public sector procurement professionals in what institutional AI complacency looks like and what it costs. These are not obscure references. They are the currency of buyer due diligence conversations.</p>
+
+      <p>The suppliers who will win and retain public sector contracts in this environment are those who treat AI governance as a strategic differentiator, not a compliance task. They will produce an AI Risk Register before they are asked. They will conduct bias assessments before deployment, not after harm. They will integrate workforce impact planning into every AI implementation. They will communicate proactively, govern from the board, and build evidence portfolios that can be placed on a procurement table without hesitation.</p>
+
+      <div class="pull">
+        <p><span class="pull-title">The competitive advantage argument.</span> In a market where most suppliers are still treating AI governance as a tick-box exercise, the supplier who demonstrates genuine, evidenced, board-owned AI governance capability will score materially higher, win more competitively, and build the kind of buyer trust that underpins long-term contract relationships in the public sector.</p>
+      </div>
+    </section>
+
+    <hr class="rule">
+
+    <!-- REFERENCES -->
+    <section class="part" id="references">
+      <div class="part-eyebrow">References &amp; Sources</div>
+      <h2>Citations.</h2>
+
+      <ol class="references">
+        <li id="ref-1">HM Government. <em>Procurement Act 2023</em>. Came into force 24 February 2025. <a href="https://www.legislation.gov.uk/" target="_blank" rel="noopener">legislation.gov.uk</a>.</li>
+        <li id="ref-2">Cabinet Office. "The Procurement Act 2023, A Short Guide for Suppliers." GOV.UK, November 2023. <a href="https://www.gov.uk/government/publications/procurement-act-2023-short-guides" target="_blank" rel="noopener">gov.uk/government/publications/procurement-act-2023-short-guides</a>.</li>
+        <li id="ref-3">Cabinet Office. <em>Procurement Policy Note 017, Improving Transparency of AI Use in Procurement</em>. GOV.UK, 16 February 2025. <a href="https://www.gov.uk/government/publications/ppn-017-improving-transparency-of-ai-use-in-procurement" target="_blank" rel="noopener">gov.uk/government/publications/ppn-017-improving-transparency-of-ai-use-in-procurement</a>.</li>
+        <li id="ref-4">Cabinet Office. <em>Procurement Policy Note 002, The Social Value Model</em>. GOV.UK, updated March 2025 (mandatory from 1 October 2025). <a href="https://www.gov.uk/government/publications/ppn-002-taking-account-of-social-value-in-the-award-of-contracts" target="_blank" rel="noopener">gov.uk/government/publications/ppn-002-taking-account-of-social-value-in-the-award-of-contracts</a>.</li>
+        <li id="ref-5">Central Digital &amp; Data Office, Cabinet Office. <em>Algorithmic Transparency Recording Standard (ATRS)</em>. GOV.UK. <a href="https://www.gov.uk/government/publications/algorithmic-transparency-template" target="_blank" rel="noopener">gov.uk/government/publications/algorithmic-transparency-template</a>.</li>
+        <li id="ref-6">NHS England. <em>Digital Technology Assessment Criteria (DTAC)</em>. <a href="https://www.digitalregulations.innovation.nhs.uk/regulations-and-guidance-for-developers/all-developers-guidance/using-the-dtac" target="_blank" rel="noopener">digitalregulations.innovation.nhs.uk</a>.</li>
+        <li id="ref-7">Burges Salmon. "How is AI Being Used in UK Government? Additional Algorithmic Transparency Recording Standard Entries." 4 February 2026. <a href="https://www.burges-salmon.com/articles/102jrk1/how-is-ai-being-used-in-uk-government-additional-algorithmic-transparency-recor/" target="_blank" rel="noopener">burges-salmon.com</a>.</li>
+        <li id="ref-8">NHS England, NHS Transformation Directorate. "How to Use the DTAC." <a href="https://transform.england.nhs.uk/key-tools-and-info/digital-technology-assessment-criteria-dtac/how-to-use-the-dtac/" target="_blank" rel="noopener">transform.england.nhs.uk</a>.</li>
+        <li id="ref-9">Computer Weekly. "DWP 'Fairness Analysis' Reveals Bias in AI Fraud Detection System." 9 December 2024. <a href="https://www.computerweekly.com/news/366616983/DWP-fairness-analysis-reveals-bias-in-AI-fraud-detection-system" target="_blank" rel="noopener">computerweekly.com</a>.</li>
+        <li id="ref-10">The Guardian. "Revealed, Bias Found in AI System Used to Detect UK Benefits Fraud." 6 December 2024. <a href="https://www.theguardian.com/" target="_blank" rel="noopener">theguardian.com</a>.</li>
+        <li id="ref-11">actsustainably.substack.com. "Embedding Social Value, What PPN 002 Means for Suppliers." 1 October 2025.</li>
+        <li id="ref-12">European Parliament. <em>EU AI Act, Regulation 2024/1689, Annex III, High-Risk AI Systems</em>. Official Journal of the European Union, 2024. <a href="https://artificialintelligenceact.eu/annex/3/" target="_blank" rel="noopener">artificialintelligenceact.eu/annex/3</a>.</li>
+        <li id="ref-13">Taleva Blog. "EU AI Act Recruiting, Compliance Guide 2026." 16 February 2026. <a href="https://blog.taleva.io/posts/eu-ai-act-recruiting-compliance-guide" target="_blank" rel="noopener">blog.taleva.io</a>.</li>
+        <li id="ref-14">Clifford Chance. "What Does the EU AI Act Mean for Employers?" July 2024. <a href="https://www.cliffordchance.com/" target="_blank" rel="noopener">cliffordchance.com</a>.</li>
+        <li id="ref-15">Institute of Directors (Karl West). "The Post Office Horizon Scandal, Lessons for Directors." 26 March 2024. <a href="https://www.iod.com/resources/governance/the-post-office-horizon-scandal-lessons-for-directors/" target="_blank" rel="noopener">iod.com</a>.</li>
+        <li id="ref-16">Baber, C., King, B., Salmon, P., and Jiang, Y. "What Can the Post Office 'Horizon' Scandal Teach About Artificial Intelligence Deployment?" University of Birmingham, University of the Sunshine Coast. Published by the Ergonomics Society (UK), 2024. <a href="https://publications.ergonomics.org.uk/uploads/What-can-the-Post-Office-Horizon-scandal-teach-about-Artificial-Intelligence-deployment.pdf" target="_blank" rel="noopener">publications.ergonomics.org.uk</a>.</li>
+        <li id="ref-17">District Court of The Hague. <em>Judgment of 5 February 2020, Case No. C/09/550982 / HA ZA 18-388 (SyRI ruling)</em>. Referenced in EU AI Act legislative history.</li>
+        <li id="ref-18">Department for Work and Pensions. "Universal Credit Advances Model, Fairness Assessment Including Statistical Analysis." GOV.UK, 2025. <a href="https://www.gov.uk/government/publications/fairness-assessment-including-statistical-analysis-of-the-universal-credit-advances-m" target="_blank" rel="noopener">gov.uk</a>.</li>
+        <li id="ref-19">Local Government Association, LOTI, ICO, EHRC. "Responsibly Buying AI, A Guide for Councils in England." April 2025. <a href="https://www.local.gov.uk/publications/responsible-buying-how-build-equality-data-protection-your-ai-commissioning" target="_blank" rel="noopener">local.gov.uk</a>.</li>
+        <li id="ref-20">Australian Government, Data and Digital Ministers Meeting. <em>National Framework for the Assurance of Artificial Intelligence in Government</em>. June 2024. <a href="https://www.finance.gov.au/government/public-data/data-and-digital-ministers-meeting/national-framework-assurance-artificial-int" target="_blank" rel="noopener">finance.gov.au</a>.</li>
+        <li id="ref-21">Government of Canada, Treasury Board Secretariat. <em>Directive on Automated Decision-Making</em> (updated April 2023, compliance deadline June 2026). <a href="https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/guide-scope-dire" target="_blank" rel="noopener">canada.ca</a>.</li>
+        <li id="ref-22">OECD, UNESCO. <em>G7 Toolkit for AI in the Public Sector</em>. 2024. <a href="https://assets.innovazione.gov.it/1728922597-g7-toolkit-for-ai-in-the-public-sector.pdf" target="_blank" rel="noopener">assets.innovazione.gov.it</a>.</li>
+        <li id="ref-23">Digital Transformation Agency (Australia). "AI Policy Overhauled with New Impact Assessment Tool and Procurement Guidance." 1 December 2025. <a href="https://www.dta.gov.au/media-releases/ai-policy-overhauled-new-impact-assessment-tool-and-procurement-guidance" target="_blank" rel="noopener">dta.gov.au</a>.</li>
+        <li id="ref-24">Australian Government Solicitor. <em>Legal Update No. 327, AI Model Contract Clauses</em>. April 2025. <a href="https://www.ags.gov.au/publications/legal-update/no327" target="_blank" rel="noopener">ags.gov.au</a>.</li>
+        <li id="ref-25">Tussell. <em>UK Public Sector AI Procurement Tracker</em>. Published 23 March 2026 (data to 17 March 2026). <a href="https://www.tussell.com/insights/ai-procurement-tracker" target="_blank" rel="noopener">tussell.com</a>.</li>
+        <li id="ref-26">NHS England. <em>Sustainability and Social Value Requirements for Suppliers (NHS Five Asks, Net Zero Supplier Roadmap)</em>. achievegoal12.co.uk, December 2024.</li>
+      </ol>
+    </section>
+
+    <!-- FOOTER CTA -->
+    <footer class="doc-footer reveal">
+      <div class="footer-cta-title">Lead the conversation.<br>Don't be caught unprepared.</div>
+      <p class="footer-cta-text">In a market where buyers are trained to look for the Horizon pattern, your AI governance is your pitch. Early movers who build and demonstrate genuine capability will set the standard others are measured against.</p>
+      <div class="footer-links">
+        <a class="footer-link" href="mailto:richard.hanrahan@therpna.co.uk">richard.hanrahan@therpna.co.uk</a>
+        <a class="footer-link" href="https://decks.therpna.co.uk/ai-accountability-summary/">View the executive summary</a>
+        <a class="footer-link" href="https://decks.therpna.co.uk/ai-accountability/">View the 16-slide deck</a>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.reveal, .part, .toc, footer.doc-footer').forEach(el => {
+    el.classList.add('reveal');
+    observer.observe(el);
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight) { el.classList.add('visible'); }
+  });
+</script>
+</body>
+</html>
