@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>RPNA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0d1b2a;
+            --color-text: #e8edf4;
+            --color-text-muted: #7a8fa8;
+            --color-accent: #FF8000;
+            --color-glass-border: rgba(255,255,255,0.09);
+            --font-display: 'Arvo', Georgia, serif;
+            --font-body: 'Nunito', system-ui, sans-serif;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; }
+        body {
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .blob-1 { width: 480px; height: 480px; top: -120px; right: -120px; background: var(--color-accent); opacity: 0.12; }
+        .blob-2 { width: 360px; height: 360px; bottom: -100px; left: -80px; background: #4994A5; opacity: 0.10; }
+        main {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            max-width: 560px;
+        }
+        .logo {
+            height: clamp(40px, 4vw, 56px);
+            width: auto;
+            margin-bottom: clamp(2rem, 4vw, 3rem);
+            opacity: 0.95;
+        }
+        h1 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            margin: 0 0 0.75rem;
+            line-height: 1.2;
+            color: var(--color-text);
+        }
+        .sub {
+            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+            color: var(--color-text-muted);
+            line-height: 1.55;
+            margin: 0 0 2rem;
+        }
+        .contact {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+        .contact a {
+            color: var(--color-accent);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,128,0,0.4);
+            padding-bottom: 1px;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+        .contact a:hover {
+            color: #FFC266;
+            border-bottom-color: #FFC266;
+        }
+        footer {
+            position: absolute;
+            bottom: clamp(16px, 2vw, 24px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            opacity: 0.7;
+            z-index: 2;
+            white-space: nowrap;
+        }
+        @media (max-width: 480px) {
+            footer { font-size: 0.6rem; bottom: 14px; }
+            main { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <main>
+        <img class="logo" src="assets/logo-orange-transparent.png" alt="RPNA">
+        <h1>Private deck library.</h1>
+        <p class="sub">Please use the direct link you've been sent. If you've lost it, get in touch.</p>
+        <p class="contact"><a href="mailto:richard.hanrahan@therpna.co.uk">richard.hanrahan@therpna.co.uk</a></p>
+    </main>
+
+    <footer>Company Confidential · RPNA Ltd.</footer>
+</body>
+</html>
