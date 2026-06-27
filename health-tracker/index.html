@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitals — Personal Health Tracker · RPNA</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #0d1b2a;
+      --color-bg-deep: #070f18;
+      --color-surface: #152436;
+      --color-surface-2: #1c3146;
+      --color-text: #e8edf4;
+      --color-text-secondary: #b0bdd0;
+      --color-text-muted: #8497ad;
+      --color-accent-1: #FF8000;
+      --color-accent-2: #FFC266;
+      --color-accent-3: #4994A5;
+      --color-good: #4caf7d;
+      --color-warn: #e0a64a;
+      --color-bad: #d96a6a;
+      --color-glass-bg: rgba(255,255,255,0.05);
+      --color-glass-border: rgba(255,255,255,0.09);
+      --font-display: 'Arvo', 'Rockwell', Georgia, serif;
+      --font-body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+    }
+  </style>
+  <style>
+    /* Palette declared in plain CSS too, so colours never depend on the Tailwind CDN parsing @theme. */
+    :root {
+      --color-bg: #0d1b2a; --color-bg-deep: #070f18; --color-surface: #152436; --color-surface-2: #1c3146;
+      --color-text: #e8edf4; --color-text-secondary: #b0bdd0; --color-text-muted: #8497ad;
+      --color-accent-1: #FF8000; --color-accent-2: #FFC266; --color-accent-3: #4994A5;
+      --color-good: #4caf7d; --color-warn: #e0a64a; --color-bad: #d96a6a;
+      --color-glass-bg: rgba(255,255,255,0.05); --color-glass-border: rgba(255,255,255,0.09);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; background: #0d1b2a; }
+    body { font-family: 'Nunito', system-ui, sans-serif; color: #e8edf4; min-height: 100vh;
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(255,128,0,0.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 20%, rgba(73,148,165,0.12), transparent 55%),
+        #0d1b2a;
+      background-attachment: fixed;
+    }
+    h1,h2,h3,.font-display { font-family: 'Arvo', Georgia, serif; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    .glass { background: var(--color-glass-bg); border: 1px solid var(--color-glass-border); backdrop-filter: blur(10px); }
+    .card { background: rgba(21,36,54,0.7); border: 1px solid var(--color-glass-border); border-radius: 18px; }
+    .nav-link { display:flex; align-items:center; gap:.7rem; padding:.7rem 1rem; border-radius:12px; color:var(--color-text-secondary); cursor:pointer; transition:all .2s; font-weight:600; white-space:nowrap; }
+    .nav-link:hover { background: rgba(255,255,255,0.05); color: var(--color-text); }
+    .nav-link.active { background: linear-gradient(135deg, rgba(255,128,0,0.18), rgba(255,128,0,0.04)); color:#fff; border:1px solid rgba(255,128,0,0.35); }
+    .nav-link .ico { width:20px; text-align:center; font-size:1.05rem; }
+    .btn { display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1.1rem; border-radius:12px; font-weight:700; cursor:pointer; border:none; transition:all .2s; font-size:.92rem; }
+    .btn-primary { background: linear-gradient(135deg,#FF8000,#ff9e3d); color:#1a1003; }
+    .btn-primary:hover { filter:brightness(1.08); transform:translateY(-1px); }
+    .btn-ghost { background: var(--color-glass-bg); color: var(--color-text); border:1px solid var(--color-glass-border); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.09); }
+    .btn-danger { background: rgba(217,106,106,0.15); color:#f0a0a0; border:1px solid rgba(217,106,106,0.4); }
+    .btn-sm { padding:.35rem .7rem; font-size:.8rem; border-radius:9px; }
+    .field { display:flex; flex-direction:column; gap:.35rem; }
+    .field label { font-size:.78rem; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:.04em; }
+    .input, select.input, textarea.input { background: rgba(7,15,24,0.6); border:1px solid var(--color-glass-border); border-radius:10px; padding:.6rem .8rem; color:var(--color-text); font-family:inherit; font-size:.95rem; outline:none; transition:border .2s; width:100%; }
+    .input:focus { border-color: var(--color-accent-1); }
+    .pill { display:inline-flex; align-items:center; gap:.35rem; padding:.2rem .6rem; border-radius:999px; font-size:.72rem; font-weight:700; }
+    .pill-manual { background: rgba(132,151,173,0.18); color:#b8c6d8; }
+    .pill-strava { background: rgba(252,76,2,0.18); color:#ff8a5c; }
+    .pill-oura { background: rgba(130,110,220,0.2); color:#b3a4f0; }
+    .pill-apple { background: rgba(255,255,255,0.12); color:#e8edf4; }
+    .pill-scanfit { background: rgba(73,148,165,0.2); color:#7fc3d4; }
+    table { width:100%; border-collapse:collapse; }
+    th { text-align:left; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; color:var(--color-text-muted); font-weight:800; padding:.6rem .7rem; border-bottom:1px solid var(--color-glass-border); }
+    td { padding:.6rem .7rem; border-bottom:1px solid rgba(255,255,255,0.05); font-size:.9rem; }
+    tr:hover td { background: rgba(255,255,255,0.025); }
+    .stat-value { font-family:'Arvo',serif; font-weight:700; line-height:1; }
+    .modal-backdrop { position:fixed; inset:0; background:rgba(5,10,16,0.7); backdrop-filter:blur(4px); z-index:50; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    .modal { width:min(560px,100%); max-height:90vh; overflow:auto; }
+    .trend-up { color: var(--color-good); }
+    .trend-down { color: var(--color-bad); }
+    .fade-in { animation: fade .35s ease; }
+    @keyframes fade { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--color-surface-2); border:1px solid var(--color-glass-border); padding:.8rem 1.3rem; border-radius:12px; z-index:80; font-weight:600; box-shadow:0 10px 40px rgba(0,0,0,.4); }
+    @media (max-width: 860px){ .sidebar{ position:fixed; left:0; right:0; bottom:0; top:auto; flex-direction:row; height:auto; width:100%; z-index:40; overflow-x:auto; border-top:1px solid var(--color-glass-border); border-right:none; } .sidebar .brand,.sidebar .nav-foot{ display:none; } .nav-link{ flex-direction:column; gap:.2rem; font-size:.68rem; padding:.5rem .6rem; } .nav-link span.lbl{ font-size:.66rem; } .main{ padding-bottom:84px !important; } }
+  </style>
+</head>
+<body>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar glass" style="width:240px; flex-shrink:0; display:flex; flex-direction:column; gap:.3rem; padding:1.1rem .8rem; border-right:1px solid var(--color-glass-border); position:sticky; top:0; height:100vh;">
+      <div class="brand" style="display:flex; align-items:center; gap:.6rem; padding:.4rem .6rem 1rem;">
+        <img src="../assets/logo-orange-transparent.png" alt="RPNA" style="height:30px; width:auto;">
+        <div>
+          <div class="font-display" style="font-weight:700; font-size:1.05rem; letter-spacing:.01em;">Vitals</div>
+          <div style="font-size:.66rem; color:var(--color-text-muted); letter-spacing:.08em; text-transform:uppercase;">Health Tracker</div>
+        </div>
+      </div>
+      <div id="nav" class="flex md:flex-col" style="display:flex; flex-direction:column; gap:.25rem;"></div>
+      <div class="nav-foot" style="margin-top:auto; padding:.6rem; font-size:.7rem; color:var(--color-text-muted);">
+        <div id="storageNote">Data stored on this device</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main" style="flex:1; padding:2rem clamp(1rem,3vw,2.5rem); max-width:1280px; margin:0 auto; width:100%;">
+      <div id="view"></div>
+    </main>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot"></div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
